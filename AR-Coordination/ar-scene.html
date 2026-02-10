@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Eksplorasi AR - AR-COORDINATION</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2491/2491418.png" type="image/png">
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.7/aframe/build/aframe-ar.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/gesture-handler.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #ui-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 10px;
+            right: 10px;
+            z-index: 100;
+            background: linear-gradient(to top, rgba(13, 27, 42, 0.95), rgba(27, 38, 59, 0.92));
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 18px 15px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+            animation: slideUp 0.6s ease;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .overlay-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            gap: 10px;
+        }
+
+        .overlay-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button:active {
+            transform: scale(0.96);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        button.active {
+            background: rgba(0, 245, 212, 0.4);
+            border-color: rgba(0, 245, 212, 0.8);
+        }
+
+        .info-text {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* Info Panel Styling */
+        #info-panel {
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            right: 10px;
+            z-index: 100;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(50, 50, 50, 0.9));
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            transform: translateY(-150%);
+            transition: transform 0.4s ease;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        #info-panel.visible {
+            transform: translateY(0);
+        }
+
+        #info-panel h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #00f5d4;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #info-panel p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        #info-panel .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.7;
+            padding: 5px;
+        }
+
+        #info-panel .close-btn:hover {
+            opacity: 1;
+        }
+
+        /* Loading indicator */
+        #loading-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 200;
+            color: white;
+            text-align: center;
+            display: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #00f5d4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Toast notification */
+        #toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 300;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #toast.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <a-scene embedded arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;"
+        renderer="logarithmicDepthBuffer: true; colorManagement: true;" vr-mode-ui="enabled: false"
+        style="position:absolute; top:0; left:0; width:100%; height:100%;">
+
+        <!-- Audio Assets -->
+        <a-assets timeout="10000">
+            <!-- Using Meow.mp3 for testing - replace with proper audio files later -->
+            <audio id="audio-test" src="assets/audio/Meow.mp3" preload="auto"></audio>
+            <audio id="audio-test2" src="assets/audio/TEST2.mp3" preload="auto"></audio>
+        </a-assets>
+
+        <!-- Sistem Saraf (done)-->
+        <a-marker id="ar-marker" type="pattern" url="assets/markers/pettern/pattern-sistem saraf.patt" emitevents="true">
+
+            <!-- 3D Model -->
+            <a-entity id="model-zona1" gltf-model="assets/models/sistem_saraf.gltf" scale="150 150 150" position="0 0.5 0"
+                gesture-handler="minScale: 0.3; maxScale: 1.5">
+            </a-entity>
+
+        </a-marker>
+
+        <!-- Otak(done) -->
+        <a-marker id="ar-marker" type="pattern" url="assets/markers/pettern/pattern-otak.patt" emitevents="true">
+
+            <!-- 3D Model -->
+            <a-entity id="model-zona1" gltf-model="assets/models/otak.glb" scale="5 5 5" position="0 0.5 0"
+                gesture-handler="minScale: 0.3; maxScale: 1.5">
+            </a-entity>
+        </a-marker>
+
+        <!-- Sel Saraf (done)-->
+        <a-marker id="ar-marker" type="pattern" url="assets/markers/pettern/pattern-sel saraf.patt" emitevents="true">
+
+            <!-- 3D Model -->
+            <a-entity id="model-zona1" gltf-model="assets/models/sel_saraf.glb" scale="2 2 2" position="0 0.01 0"
+                gesture-handler="minScale: 0.3; maxScale: 1.5">
+            </a-entity>
+        </a-marker>
+
+        <!-- Mata (done) -->
+        <a-marker id="ar-marker" type="pattern" url="assets/markers/pettern/pattern-mata.patt" emitevents="true">
+
+            <!-- 3D Model -->
+            <a-entity id="model-zona1" gltf-model="assets/models/mata.glb" scale="0.5 0.5 0.5" position="0 0.1 0"
+                gesture-handler="minScale: 0.3; maxScale: 1.5">
+            </a-entity>
+
+        </a-marker>
+
+        <!-- Telinga (done)-->
+        <a-marker id="ar-marker" type="pattern" url="assets/markers/pettern/pattern-telinga.patt" emitevents="true">
+
+            <!-- 3D Model -->
+            <a-entity id="model-zona1" gltf-model="assets/models/telinga.glb" scale="0.1 0.1 0.1"
+                position="0 0.01 0" gesture-handler="minScale: 0.3; maxScale: 1.5">
+            </a-entity>
+        </a-marker>
+
+        <!-- Hidung (done)-->
+        <a-marker id="ar-marker" type="pattern" url="assets/markers/pettern/pattern-hidung.patt" emitevents="true">
+
+            <!-- 3D Model -->
+            <a-entity id="model-zona1" gltf-model="assets/models/hidung.glb" scale="0.7 0.7 0.7" position="0 0.4 0"
+                gesture-handler="minScale: 0.3; maxScale: 1.5">
+            </a-entity>
+        </a-marker>
+
+        <!-- Lidah (done)-->
+        <a-marker id="ar-marker" type="pattern" url="assets/markers/pettern/pattern-lidah.patt" emitevents="true">
+
+            <!-- 3D Model -->
+            <a-entity id="model-zona1" gltf-model="assets/models/lidah.glb" scale="0.7 0.7 0.7" position="0 0.2 0"
+                gesture-handler="minScale: 0.3; maxScale: 1.5">
+            </a-entity>
+        </a-marker>
+
+        <!-- Kulit (done) -->
+        <a-marker id="ar-marker" type="pattern" url="assets/markers/pettern/pattern-kulit.patt" emitevents="true">
+
+            <!-- 3D Model -->
+            <a-entity id="model-zona1" gltf-model="assets/models/kulit.glb" scale="0.6 0.6 0.6"
+                position="0 0.1 0" gesture-handler="minScale: 0.3; maxScale: 1.5">
+            </a-entity>
+        </a-marker>
+
+        <!-- Camera with cursor for click detection -->
+        <a-entity camera look-controls="enabled: false">
+            <a-entity cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable; far: 100;"
+                position="0 0 -1">
+            </a-entity>
+        </a-entity>
+    </a-scene>
+
+    <!-- Loading Indicator -->
+    <div id="loading-indicator">
+        <div class="spinner"></div>
+        <p>Memuat model 3D...</p>
+    </div>
+
+    <!-- Info Panel (for displaying clicked hotspot info) -->
+    <div id="info-panel">
+        <button class="close-btn" onclick="hideInfoPanel()">×</button>
+        <h3 id="info-title">Judul</h3>
+        <p id="info-content">Konten informasi akan muncul di sini.</p>
+    </div>
+
+    <!-- UI Overlay -->
+    <div id="ui-overlay">
+        <div class="overlay-header">
+            <link src="https://cdn-icons-png.flaticon.com/512/2491/2491418.png" alt="Icon AR" class="overlay-img">
+            <h3>Eksplorasi AR</h3>
+        </div>
+
+        <div class="button-group">
+            <button onclick="window.location.href='gallery.html'">← Sebelumnya</button>
+            <button onclick="window.location.href='index.html'">Menu Utama</button>
+            <button onclick="window.location.href='tutorial.html'">Tutorial →</button>
+        </div>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast"></div>
+
+    <script>
+        // ===== STATE MANAGEMENT =====
+        let labelsVisible = false;
+        let audioEnabled = true;
+        let currentAudio = null;
+        let savedVolume = parseFloat(localStorage.getItem('arbreath-volume')) || 80;
+        let toastTimeout = null;
+        let lastClickTime = 0; // Debounce to prevent double triggers
+        const CLICK_DEBOUNCE_MS = 300;
+
+        // ===== CLICK OFFSET CORRECTION =====
+        // Adjust these values to fix the offset between visual hotspot and click position
+        // Positive X = shift click detection to the RIGHT
+        // Positive Y = shift click detection DOWN
+        const CLICK_OFFSET_X = 0.05;  // NDC offset (try values between -0.2 to 0.2)
+        const CLICK_OFFSET_Y = 0.05;  // NDC offset (try values between -0.2 to 0.2)
+
+        // ===== TOAST NOTIFICATION =====
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('visible');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 2000);
+        }
+
+        // ===== CLICKABLE COMPONENT =====
+        AFRAME.registerComponent('clickable', {
+            init: function () {
+                const el = this.el;
+                const self = this;
+
+                // Multiple event listeners for maximum compatibility
+                const handleClick = function (evt) {
+                    console.log('🎯 CLICK EVENT on:', el.getAttribute('data-target'), 'type:', evt.type);
+                    evt.stopPropagation();
+                    self.handleInteraction(evt);
+                };
+
+                // A-Frame events
+                el.addEventListener('click', handleClick);
+                el.addEventListener('mousedown', handleClick);
+                el.addEventListener('mouseenter', function () {
+                    el.setAttribute('opacity', '1');
+                });
+                el.addEventListener('mouseleave', function () {
+                    el.setAttribute('opacity', '0.8');
+                });
+
+                // Make sure element is interactive
+                el.classList.add('raycastable');
+                el.setAttribute('class', el.getAttribute('class') + ' clickable hotspot');
+
+                console.log('🎯 Clickable initialized on:', el.getAttribute('data-target'));
+            },
+
+            handleInteraction: function (evt) {
+                const el = this.el;
+                const target = el.getAttribute('data-target');
+                const title = el.getAttribute('data-title');
+                const info = el.getAttribute('data-info');
+                const audioSrc = el.getAttribute('data-audio');
+
+                console.log('✅ Hotspot clicked:', target);
+
+                // Visual feedback - flash green
+                const originalColor = el.getAttribute('color');
+                el.setAttribute('color', '#00FF00');
+                setTimeout(() => {
+                    el.setAttribute('color', originalColor);
+                }, 300);
+
+                // Haptic feedback
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50);
+                }
+
+                // Show info panel
+                showInfoPanel(title, info);
+
+                // Play audio if enabled
+                if (audioEnabled && audioSrc) {
+                    playAudio(audioSrc);
+                }
+
+                // Auto-zoom effect
+                this.zoomToHotspot(el);
+            },
+
+            zoomToHotspot: function (hotspot) {
+                const model = document.querySelector('#model-zona1');
+                if (!model) return;
+
+                const hotspotPos = hotspot.getAttribute('position');
+
+                model.setAttribute('animation__zoom', {
+                    property: 'scale',
+                    to: '0.7 0.7 0.7',
+                    dur: 800,
+                    easing: 'easeInOutQuad'
+                });
+
+                // Slight position adjustment to center on hotspot
+                model.setAttribute('animation__move', {
+                    property: 'position',
+                    to: `${-hotspotPos.x * 0.2} 0.2 0`,
+                    dur: 800,
+                    easing: 'easeInOutQuad'
+                });
+            }
+        });
+
+        // ===== INFO PANEL FUNCTIONS =====
+        function showInfoPanel(title, content) {
+            const panel = document.getElementById('info-panel');
+            const titleEl = document.getElementById('info-title');
+            const contentEl = document.getElementById('info-content');
+
+            titleEl.textContent = title;
+            contentEl.textContent = content;
+            panel.classList.add('visible');
+
+            // Auto-hide after 8 seconds
+            setTimeout(() => {
+                panel.classList.remove('visible');
+            }, 8000);
+        }
+
+        function hideInfoPanel() {
+            document.getElementById('info-panel').classList.remove('visible');
+            stopCurrentAudio();
+        }
+
+        // ===== AUDIO FUNCTIONS =====
+        function playAudio(audioSelector) {
+            console.log('🔊 playAudio called with:', audioSelector);
+            stopCurrentAudio();
+
+            // Try to find the audio element
+            let audioEl = document.querySelector(audioSelector);
+            console.log('🔊 Audio element found:', audioEl);
+
+            if (audioEl) {
+                audioEl.volume = savedVolume / 100;
+                audioEl.currentTime = 0;
+                audioEl.play().then(() => {
+                    console.log('🔊 Audio playing successfully');
+                }).catch(e => {
+                    console.log('🔊 Audio play failed:', e.message);
+                    // Fallback: Use Web Speech API for text-to-speech
+                    const info = document.getElementById('info-content').textContent;
+                    speakText(info);
+                });
+                currentAudio = audioEl;
+            } else {
+                // Try direct path if selector doesn't work
+                console.log('🔊 Trying direct audio path...');
+                const testAudio = new Audio('assets/audio/Meow.mp3');
+                testAudio.volume = savedVolume / 100;
+                testAudio.play().then(() => {
+                    console.log('🔊 Direct audio playing');
+                }).catch(e => {
+                    console.log('🔊 Direct audio failed:', e.message);
+                    // Fallback to text-to-speech
+                    const info = document.getElementById('info-content').textContent;
+                    speakText(info);
+                });
+                currentAudio = testAudio;
+            }
+        }
+
+        function stopCurrentAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio = null;
+            }
+            // Also stop speech synthesis
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
+        }
+
+        function speakText(text) {
+            if ('speechSynthesis' in window && audioEnabled) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'id-ID';
+                utterance.rate = 0.9;
+                utterance.volume = savedVolume / 100;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            document.getElementById('audio-state').textContent = audioEnabled ? 'ON' : 'OFF';
+            document.getElementById('btn-audio').classList.toggle('active', !audioEnabled);
+
+            if (!audioEnabled) {
+                stopCurrentAudio();
+                showToast('🔇 Audio dimatikan');
+            } else {
+                showToast('🔊 Audio diaktifkan');
+                // Test audio by speaking a short message
+                if ('speechSynthesis' in window) {
+                    const testUtterance = new SpeechSynthesisUtterance('Audio aktif');
+                    testUtterance.lang = 'id-ID';
+                    testUtterance.volume = savedVolume / 100;
+                    speechSynthesis.speak(testUtterance);
+                }
+            }
+
+            if ('vibrate' in navigator) {
+                navigator.vibrate(30);
+            }
+        }
+
+        // ===== LABEL FUNCTIONS =====
+        function toggleLabels() {
+            labelsVisible = !labelsVisible;
+            const hotspots = document.querySelectorAll('.hotspot');
+
+            hotspots.forEach(hotspot => {
+                const target = hotspot.getAttribute('data-target');
+                const title = hotspot.getAttribute('data-title');
+
+                // Check if label entity already exists
+                let labelEl = document.getElementById(`label-${target}`);
+
+                if (labelsVisible) {
+                    // Create label if doesn't exist
+                    if (!labelEl) {
+                        labelEl = document.createElement('a-text');
+                        labelEl.setAttribute('id', `label-${target}`);
+                        labelEl.setAttribute('value', title);
+                        labelEl.setAttribute('color', 'white');
+                        labelEl.setAttribute('align', 'center');
+                        labelEl.setAttribute('width', '2');
+                        labelEl.setAttribute('position', '0 0.18 0');
+                        labelEl.setAttribute('scale', '1 1 1');
+                        labelEl.setAttribute('side', 'double');
+                        hotspot.appendChild(labelEl);
+                        console.log('Created label for:', target);
+                    }
+                    labelEl.setAttribute('visible', 'true');
+                    hotspot.setAttribute('opacity', '1');
+                } else {
+                    // Hide label
+                    if (labelEl) {
+                        labelEl.setAttribute('visible', 'false');
+                    }
+                    hotspot.setAttribute('opacity', '0.8');
+                }
+            });
+
+            document.getElementById('label-state').textContent = labelsVisible ? 'Hide' : 'Show';
+            document.getElementById('btn-labels').classList.toggle('active', labelsVisible);
+
+            // Show notification
+            showToast(labelsVisible ? '🏷️ Label ditampilkan' : '🏷️ Label disembunyikan');
+
+            if ('vibrate' in navigator) {
+                navigator.vibrate(30);
+            }
+        }
+
+        // ===== RESET FUNCTION =====
+        function resetView() {
+            const model = document.querySelector('#model-zona1');
+            if (model) {
+                model.setAttribute('animation__resetPos', {
+                    property: 'position',
+                    to: '0 0.2 0',
+                    dur: 500,
+                    easing: 'easeOutQuad'
+                });
+                model.setAttribute('animation__resetScale', {
+                    property: 'scale',
+                    to: '0.5 0.5 0.5',
+                    dur: 500,
+                    easing: 'easeOutQuad'
+                });
+                model.setAttribute('animation__resetRot', {
+                    property: 'rotation',
+                    to: '0 0 0',
+                    dur: 500,
+                    easing: 'easeOutQuad'
+                });
+            }
+
+            // Hide info panel
+            hideInfoPanel();
+
+            // Stop any playing audio
+            stopCurrentAudio();
+
+            console.log('🔄 View reset');
+
+            if ('vibrate' in navigator) {
+                navigator.vibrate([30, 50, 30]);
+            }
+        }
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 AR-BREATH loaded');
+
+            // Load saved settings
+            savedVolume = parseFloat(localStorage.getItem('arbreath-volume')) || 80;
+            console.log('🔊 Volume loaded:', savedVolume);
+
+            const scene = document.querySelector('a-scene');
+
+            // Show loading indicator
+            const loadingIndicator = document.getElementById('loading-indicator');
+            loadingIndicator.style.display = 'block';
+
+            scene.addEventListener('loaded', () => {
+                console.log('✨ A-Frame scene loaded');
+                loadingIndicator.style.display = 'none';
+
+                // Count hotspots
+                setTimeout(() => {
+                    const hotspots = document.querySelectorAll('.hotspot');
+                    console.log(`🎯 Found ${hotspots.length} hotspot(s)`);
+
+                    hotspots.forEach((hotspot, index) => {
+                        console.log(`  Hotspot ${index + 1}:`, {
+                            target: hotspot.getAttribute('data-target'),
+                            position: hotspot.getAttribute('position')
+                        });
+                    });
+                }, 1000);
+            });
+        });
+
+        // ===== MARKER DETECTION DEBUG =====
+        const marker = document.querySelector('a-marker');
+        if (marker) {
+            marker.addEventListener('markerFound', () => {
+                console.log('🎯 Marker detected!');
+                document.getElementById('loading-indicator').style.display = 'none';
+            });
+
+            marker.addEventListener('markerLost', () => {
+                console.log('❌ Marker lost');
+            });
+        }
+
+        // ===== SCREEN PROJECTION CLICK DETECTION =====
+        // Projects hotspot 3D positions to 2D screen and finds closest to click
+        function handleScreenClick(event) {
+            console.log('🔍 handleScreenClick called');
+
+            const scene = document.querySelector('a-scene');
+            if (!scene || !scene.renderer || !scene.camera) {
+                console.log('🔍 Scene not ready');
+                return;
+            }
+
+            // Get click position in pixels
+            let clickX, clickY;
+            if (event.changedTouches && event.changedTouches.length > 0) {
+                clickX = event.changedTouches[0].clientX;
+                clickY = event.changedTouches[0].clientY;
+            } else if (event.touches && event.touches.length > 0) {
+                clickX = event.touches[0].clientX;
+                clickY = event.touches[0].clientY;
+            } else {
+                clickX = event.clientX;
+                clickY = event.clientY;
+            }
+
+            console.log('🔍 Click at:', clickX, clickY);
+
+            const hotspots = document.querySelectorAll('.hotspot');
+            const camera = scene.camera;
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            let closestHotspot = null;
+            let closestDistance = Infinity;
+            const CLICK_THRESHOLD = 100; // pixels
+
+            hotspots.forEach((hotspot, idx) => {
+                if (!hotspot.object3D) return;
+
+                hotspot.object3D.updateMatrixWorld(true);
+
+                const worldPos = new THREE.Vector3();
+                hotspot.object3D.getWorldPosition(worldPos);
+
+                // Project 3D to 2D screen
+                const screenPos = worldPos.clone();
+                screenPos.project(camera);
+
+                const screenX = (screenPos.x + 1) / 2 * width;
+                const screenY = (-screenPos.y + 1) / 2 * height;
+
+                const dx = clickX - screenX;
+                const dy = clickY - screenY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                console.log(`🔍 Hotspot ${idx} at screen (${screenX.toFixed(0)}, ${screenY.toFixed(0)}), dist: ${distance.toFixed(0)}px`);
+
+                if (distance < CLICK_THRESHOLD && distance < closestDistance) {
+                    closestDistance = distance;
+                    closestHotspot = hotspot;
+                }
+            });
+
+            if (closestHotspot) {
+                const target = closestHotspot.getAttribute('data-target');
+                console.log('🎯 HIT! Target:', target, '(' + closestDistance.toFixed(0) + 'px)');
+
+                const title = closestHotspot.getAttribute('data-title');
+                const info = closestHotspot.getAttribute('data-info');
+                const audioSrc = closestHotspot.getAttribute('data-audio');
+
+                const originalColor = closestHotspot.getAttribute('color');
+                closestHotspot.setAttribute('color', '#00FF00');
+                setTimeout(() => closestHotspot.setAttribute('color', originalColor), 300);
+
+                if ('vibrate' in navigator) navigator.vibrate(50);
+
+                showInfoPanel(title, info);
+                if (audioEnabled && audioSrc) {
+                    playAudio(audioSrc);
+                }
+            } else {
+                console.log('🔍 No hotspot within', CLICK_THRESHOLD, 'px');
+            }
+        }
+
+        // Add click/touch listeners to DOCUMENT (not scene) for better capture
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📱 Setting up click handlers...');
+
+            // Listen on the entire document
+            document.addEventListener('click', (e) => {
+                const now = Date.now();
+
+                // Debounce check - skip if clicked too recently
+                if (now - lastClickTime < CLICK_DEBOUNCE_MS) {
+                    console.log('📱 Click debounced (too fast)');
+                    return;
+                }
+
+                console.log('📱 Document click at:', e.clientX, e.clientY, 'target:', e.target.tagName);
+
+                // DIRECT HOTSPOT DETECTION - Check if we clicked on a hotspot element
+                let targetEl = e.target;
+
+                // Walk up the DOM tree to find if we clicked on a hotspot
+                while (targetEl && targetEl !== document.body) {
+                    if (targetEl.tagName === 'A-SPHERE' && targetEl.classList.contains('hotspot')) {
+                        lastClickTime = now; // Update debounce time
+                        console.log('🎯 DIRECT HIT on hotspot:', targetEl.getAttribute('data-target'));
+
+                        // Trigger interaction directly
+                        const target = targetEl.getAttribute('data-target');
+                        const title = targetEl.getAttribute('data-title');
+                        const info = targetEl.getAttribute('data-info');
+                        const audioSrc = targetEl.getAttribute('data-audio');
+
+                        // Visual feedback
+                        const originalColor = targetEl.getAttribute('color');
+                        targetEl.setAttribute('color', '#00FF00');
+                        setTimeout(() => targetEl.setAttribute('color', originalColor), 300);
+
+                        // Haptic
+                        if ('vibrate' in navigator) navigator.vibrate(50);
+
+                        // Show info and play audio
+                        showInfoPanel(title, info);
+                        if (audioEnabled && audioSrc) {
+                            playAudio(audioSrc);
+                        }
+
+                        return; // Don't process further
+                    }
+                    targetEl = targetEl.parentElement;
+                }
+
+                // Fallback to raycasting only for CANVAS clicks (but with debounce)
+                if (e.target.tagName === 'CANVAS' || e.target.tagName === 'A-SCENE') {
+                    lastClickTime = now;
+                    handleScreenClick(e);
+                }
+            }, true); // Use capture phase
+
+            document.addEventListener('touchend', (e) => {
+                console.log('📱 Touch detected');
+
+                // Check for direct hotspot touch
+                let targetEl = e.target;
+                while (targetEl && targetEl !== document.body) {
+                    if (targetEl.tagName === 'A-SPHERE' && targetEl.classList.contains('hotspot')) {
+                        console.log('🎯 DIRECT TOUCH on hotspot:', targetEl.getAttribute('data-target'));
+
+                        const title = targetEl.getAttribute('data-title');
+                        const info = targetEl.getAttribute('data-info');
+                        const audioSrc = targetEl.getAttribute('data-audio');
+
+                        const originalColor = targetEl.getAttribute('color');
+                        targetEl.setAttribute('color', '#00FF00');
+                        setTimeout(() => targetEl.setAttribute('color', originalColor), 300);
+
+                        if ('vibrate' in navigator) navigator.vibrate(50);
+                        showInfoPanel(title, info);
+                        if (audioEnabled && audioSrc) {
+                            playAudio(audioSrc);
+                        }
+                        return;
+                    }
+                    targetEl = targetEl.parentElement;
+                }
+
+                if (e.target.tagName === 'CANVAS' || e.target.tagName === 'A-SCENE') {
+                    handleScreenClick(e);
+                }
+            }, true);
+
+            console.log('📱 Click handlers attached to document');
+        });
+
+        // ===== ERROR HANDLING =====
+        window.addEventListener('error', (e) => {
+            console.error('Error:', e.message);
+        });
+    </script>
+
+</body>
+
+</html>

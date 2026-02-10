@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Materi Pembelajaran - AR-COORDINATION</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2491/2491418.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 30%, #415a77 60%, #778da9 100%);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .shape {
+            position: fixed;
+            opacity: 0.12;
+            animation: floatShape 18s infinite ease-in-out;
+            z-index: 0;
+            border-radius: 50%;
+            background: #00f5d4;
+        }
+
+        .shape:nth-child(1) {
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            left: 8%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 180px;
+            height: 180px;
+            bottom: 25%;
+            right: 12%;
+            animation-delay: 6s;
+            border-radius: 60% 40% 70% 30%;
+        }
+
+        .shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            top: 55%;
+            left: 70%;
+            animation-delay: 12s;
+        }
+
+        @keyframes floatShape {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            50% {
+                transform: translate(40px, -40px) rotate(180deg);
+            }
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-img {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 6px solid rgba(0, 245, 212, 0.35);
+            box-shadow: 0 20px 70px rgba(0, 180, 216, 0.4);
+            margin-bottom: 1.8rem;
+            animation: bounce 3s ease-in-out infinite;
+            object-fit: cover;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-25px);
+            }
+        }
+
+        h1 {
+            font-size: clamp(2rem, 7vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: linear-gradient(45deg, #00f5d4, #48cae4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 6px 25px rgba(0, 180, 216, 0.35);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.92;
+            margin-bottom: 2rem;
+            color: #e0e1dd;
+        }
+
+        /* ACCORDION */
+        .accordion {
+            background: rgba(0, 180, 216, 0.1);
+            backdrop-filter: blur(22px);
+            border: 2px solid rgba(0, 245, 212, 0.2);
+            border-radius: 28px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .accordion:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 180, 216, 0.3);
+            border-color: rgba(0, 245, 212, 0.45);
+        }
+
+        .accordion-header {
+            padding: 1.4rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .accordion-header h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: #00f5d4;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .accordion-icon {
+            font-size: 1.8rem;
+            transition: transform 0.4s ease;
+            color: #48cae4;
+        }
+
+        .accordion.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 2rem;
+            transition: max-height 0.6s ease-out, padding 0.4s ease;
+        }
+
+        .accordion.active .accordion-content {
+            padding: 2rem;
+        }
+
+        /* Scrollable content for long accordion sections */
+        .scrollable-content {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .scrollable-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #00f5d4, #48cae4);
+            border-radius: 4px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #48cae4, #00f5d4);
+        }
+
+        .accordion-content p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            margin-bottom: 1.2rem;
+            color: #e0e1dd;
+        }
+
+        .accordion-content ol,
+        .accordion-content ul {
+            padding-left: 1.8rem;
+            margin: 1rem 0;
+        }
+
+        .accordion-content li {
+            margin-bottom: 1.2rem;
+            color: #e0e1dd;
+        }
+
+        .accordion-content strong {
+            color: #00f5d4;
+        }
+
+        .embed-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin: 2rem 0;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .embed-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 3rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 1.3rem 2.5rem;
+            background: rgba(0, 180, 216, 0.15);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 25px;
+            border: 2px solid rgba(0, 245, 212, 0.35);
+            transition: all 0.35s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 45px rgba(0, 180, 216, 0.35);
+            border-color: rgba(0, 245, 212, 0.7);
+        }
+
+        .highlight-box {
+            background: rgba(0, 245, 212, 0.1);
+            border-left: 4px solid #00f5d4;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .sub-section {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        /* Custom scrollbar styling */
+        .sub-section::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sub-section::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .sub-section::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #00f5d4, #48cae4);
+            border-radius: 4px;
+        }
+
+        .sub-section::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #48cae4, #00f5d4);
+        }
+
+        .sub-section h3 {
+            color: #48cae4;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .warning-box {
+            background: rgba(255, 87, 87, 0.15);
+            border-left: 4px solid #ff5757;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .info-box {
+            background: rgba(0, 180, 216, 0.15);
+            border-left: 4px solid #48cae4;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* Content images styling */
+        .image-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .content-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(0, 245, 212, 0.2);
+        }
+
+        .image-caption {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.8rem;
+            font-style: italic;
+            color: #e0e1dd;
+            text-align: center;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .image-grid-item {
+            text-align: center;
+        }
+
+        .image-grid-item img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(0, 245, 212, 0.2);
+        }
+
+        .image-grid-item p {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #00f5d4;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .accordion-header h2 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+
+    <main>
+        <header>
+            <img src="https://cdn-icons-png.flaticon.com/512/2491/2491418.png" alt="Sistem Koordinasi Icon"
+                class="header-img">
+            <h1>🧠 Materi Pembelajaran</h1>
+            <p class="subtitle">Pengantar Sistem Koordinasi Manusia</p>
+        </header>
+
+        <!-- Tujuan Pembelajaran -->
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>🎯 Tujuan Pembelajaran</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <div class="scrollable-content">
+                    <ol>
+                        <li>Peserta didik dapat mengidentifikasi 3 bagian-bagian dan fungsi sistem saraf melalui
+                            penalaran kritis dan komunikasi</li>
+                        <li>Peserta didik dapat mengidentifikasi 8 bagian dan fungsi jaringan saraf melalui penalaran
+                            kritis dan komunikasi</li>
+                        <li>Peserta didik dapat menjelaskan mekanisme kerja sistem saraf penalaran kritis dan komunikasi
+                            dengan tepat dan terstruktur</li>
+                        <li>Peserta didik dapat menjelaskan 5 jenis alat indra manusia dan fungsinya melalui penalaran
+                            kritis dan kolaborasi</li>
+                        <li>Peserta didik dapat menjelaskan mekanisme rangsangan yang diterima alat indra manusia
+                            melalui penalaran kritis dan kolaborasi</li>
+                        <li>Peserta didik dapat menyebutkan 3 fungsi hormon-hormon utama (seperti adrenalin, insulin,
+                            tiroksin, dan hormon pertumbuhan) dalam tubuh manusia melalui penalaran kritis dan
+                            kolaborasi</li>
+                        <li>Peserta didik dapat menganalisis minimal 4 pengaruh narkotika dan psikotropika terhadap
+                            sistem saraf, sistem indra, dan sistem endokrin melalui kolaborasi dan kreativitas</li>
+                        <li>Peserta didik dapat merancang poster edukatif tentang pengaruh narkotika dan psikotropika
+                            terhadap sistem saraf, sistem indra, dan sistem endokrin melalui kolaborasi dan kreativitas
+                            dengan tepat dan menarik</li>
+                        <li>Peserta didik dapat menganalisis minimal 4 kelainan atau gangguan pada sistem koordinasi
+                            (sistem saraf, sistem indra, dan sistem endokrin) melalui penalaran kritis dan kolaborasi
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pengertian Sistem Koordinasi -->
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>🔍 Pengertian Sistem Koordinasi</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <div class="scrollable-content">
+                    <p><strong>Sistem koordinasi tubuh itu apa sih??</strong></p>
+                    <p>Sistem koordinasi adalah sebuah mekanisme kompleks di dalam tubuh yang berfungsi untuk mengatur,
+                        mengendalikan, dan menyelaraskan kerja berbagai organ tubuh agar dapat bekerja secara serasi dan
+                        efisien.</p>
+                    <p>Tanpa sistem koordinasi, organ tubuh kita akan bekerja sendiri-sendiri tanpa arah. Bayangkan saat
+                        Anda ingin makan; mata melihat makanan, tangan bergerak mengambilnya, dan mulut bersiap
+                        mengunyah. Semua gerakan ini terjadi secara harmonis berkat sistem koordinasi.</p>
+
+                    <div class="highlight-box">
+                        <p><strong>Sistem koordinasi terdiri dari:</strong></p>
+                    </div>
+
+                    <ol>
+                        <li><strong>Sistem saraf</strong> → Sistem saraf bekerja sangat cepat dalam menanggapi perubahan
+                            lingkungan (rangsangan). Komunikasinya dilakukan melalui impuls listrik yang merambat di
+                            sepanjang sel saraf.</li>
+                        <li><strong>Sistem indra</strong> → sistem indra adalah "pintu gerbang" informasi bagi sistem
+                            koordinasi. Manusia memiliki lima indra (mata, hidung, telinga, lidah, dan kulit) yang
+                            berfungsi sebagai reseptor atau penerima rangsangan dari luar</li>
+                        <li><strong>Sistem endokrin</strong> → Berbeda dengan sistem saraf, sistem hormon bekerja lebih
+                            lambat namun efeknya bertahan lama. Hormon adalah zat kimia yang dihasilkan oleh kelenjar
+                            dan dialirkan melalui pembuluh darah menuju organ target.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sistem Saraf -->
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>🧠 Sistem Saraf</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <p>Fungsi saraf pada manusia secara umum Adalah mengumpulkan dari dalam dan luar tubuh (fungsi
+                    sensorik), mengirimkan informasi ke otak dan sumsum tulang belakang, memproses informasi di otak dan
+                    sumsum tulang belakang (fungsi integrasi), dan mengirimkan informasi ke otot, kelenjar dan organ
+                    lainnya untuk merespons dengan tepat (fungsi motorik)</p>
+
+                <div class="sub-section">
+                    <h3>1. Bagian-bagian sistem saraf dan fungsi:</h3>
+                    <ol>
+                        <li><strong>Otak</strong> → otak merupakan bagian dalam sistem saraf pusat pada manusia. Bagian
+                            otak terdiri dari otak besar, otak kecil,dan batang otak. Otak dilindungi tengkorak dan
+                            selaput otak (meninges) dan dikelilingi cairan serebrospinal, bagian-bagian otak
+                            diantaranya:
+                            <ul>
+                                <li><strong>Otak Besar (Cerebrum):</strong> Mengatur aktivitas mental seperti berpikir,
+                                    ingatan, kemauan, serta mengendalikan gerakan otot sadar dan interpretasi panca
+                                    indra. Otak besar terdiri dari:
+                                    <ul>
+                                        <li><em>Lobus frontal (bagian depan)</em> yang mengendalikan Gerakan, ucapan,
+                                            perilaku, memori, emosi, dann kepribadian. Bagian otak ini juga berperan
+                                            dalam fungsi intelektual, seperti proses berfikir, penalaran, pemecahan
+                                            masalah, pengambilan Keputusan, dan perencanaan.</li>
+                                        <li><em>Lobus parietal (atas)</em> yang mengendalikan sensasi, seperti sentuhan,
+                                            tekanan, nyeri, dan suhu. Lobus ini juga mengendalikan orientasi spasial
+                                            atau pemahaman tentang ukuran, bentuk dan arah.</li>
+                                        <li><em>Lobus temporal (Samping)</em> yang mengendalikan indra pendengaran,
+                                            ingatan, dan emosi. Lobus temporal kiri juga berperan dalam fungsi bicara.
+                                        </li>
+                                        <li><em>Lobus oksipital (belakang)</em> yang mengendalikan fungsi penglihatan.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><strong>Otak Kecil (Cerebellum):</strong> Berfungsi sebagai pusat keseimbangan tubuh
+                                    dan koordinasi gerakan otot agar berjalan mulus dan presisi</li>
+                                <li><strong>Batang Otak (Brainstem):</strong> Menghubungkan otak ke sumsum tulang
+                                    belakang. Ia mengatur fungsi otomatis yang vital seperti detak jantung, pernapasan,
+                                    tekanan darah, dan proses menelan</li>
+                            </ul>
+                        </li>
+                        <li><strong>Sumsum Tulang belakang</strong> → sumsum tulang belakang atau saraf tulang belakang
+                            berperan dalam melakukan aktivitas harian dengan cara mengirimkan sinyal dari otak ke bagian
+                            tubuh dan memerintahkan otot untuk bergerak. Sumsum tulang belakang juga menerima masukan
+                            sensorik dari tubuh, memprosesnya, dan mengirimkan informasi ke otak.</li>
+                        <li><strong>Sistem saraf tepi</strong> → fungsi sistem saraf tepi Adalah menghubungkan respon
+                            sistem saraf pusat ke bagian organ tubuh dan bagian lainnya di tubuh. Saraf tepi meluas dari
+                            saraf pusat ke area terluar tubuh sebagai jalur penerimaan dan pengiriman rangsangan dari
+                            dan ke otak. Masing-masing susunan saraf tepi, yaitu somatic dan otonom memiliki fungsi yang
+                            berbeda.
+                            <ul>
+                                <li><strong>Sistem saraf somatik:</strong> saraf somatic mengontrol semua aktivitas yang
+                                    dilakukan secara sadar mempengaruhi respon tubuh, seperti menggerakkan lengan,
+                                    tangan, dan kaki. Fungsi saraf ini menyampaikan informasi sensorik dari kulit, organ
+                                    indra, atau otot ke sistem saraf pusat. Selai itu, saraf somatic juga membawa respon
+                                    keluar dari otak untuk menghasilkan respon berupa getaran.</li>
+                                <li><strong>Sistem saraf otonom:</strong> mengontrol aktivitas yang dilakukan secara tak
+                                    sadar atau tanpa perlu memikirkannya. Sistem ini terus menerus aktif untuk mengatur
+                                    berbagai aktivitas, seperti bernafas, detak jantung, dan proses metabolisme tubuh.
+                                    Saraf otonom memiliki 2 bagian, yaitu saraf simpatik dan parasimpatik:
+                                    <ul>
+                                        <li><em>Sistem saraf simpatik:</em> sistem ini mengatur respon resistemsi tubuh
+                                            Ketika ada ancaman. Mempersiapkan tubuh untuk mengeluarkan energi dan
+                                            merespon potensi ancamanan di lingkungan.</li>
+                                        <li><em>Sistem saraf parasimpatik:</em> sistem ini mempunyai fungsi menjaga
+                                            fungsi normal tubuh setelah terjadi ancaman pada tubuh. Setelah ancaman
+                                            berlalu, sistem akan memperlambat pernafasan, mengurangi aliran darah ke
+                                            otot, dan menyempitkan pupil.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="sub-section">
+                    <h3>2. Bagian-bagian sel saraf dan fungsinya</h3>
+                    <ol>
+                        <li><strong>Dendrit</strong> (dari Bahasa Yunani dendron, “pohon”) Adalah cabang dari neuron.
+                            Dendrit berfungsi mengirimkan impuls ke badan sel saraf</li>
+                        <li><strong>Inti sel atau nucleus</strong> merupakan organel terbesar dalam tubuh yang terdiri
+                            dari empat bagian utama. Fungsi utama inti sel Adalah sebagai pusat komando yang menyimpan
+                            materi genetic dan mengontrol pertumbuhan dan reproduksi sel.</li>
+                        <li><strong>Akson atau neurit</strong> Adalah sel yang panjang, tipis, dan membawa impuls
+                            elektrikal menjauh dari sel tubuh neuron atau soma. Fungsi akson Adalah untuk mengirim
+                            informasi ke bermacam neuron, otot, dan kelenjar.</li>
+                        <li><strong>Badan sel</strong> juga dikenal sebagai soma Adalah bagian utama dari sel saraf.
+                            Soma Adalah bagian yang mengandung inti sel atau nucleus dan berbagai organel sel seperti
+                            mitokondria, reticulum endoplasma dan ribosom. Badan sel berfungsi dalam sintesis protein
+                            dan pemrosesan molekul. Selain itu, fungsi penting lainnya dari badan sel Adalah untuk
+                            memproduksi neurotransmitter yaitu zat kimia yang memungkingkan neuron untuk berkomunikasi
+                            satu sama lain.</li>
+                        <li><strong>Sel schwan</strong> Adalah jenis sel glial yang mengelilingi akson dan merupakan sel
+                            glial utama pada sistem saraf tepi. Fungsi sel schwann Adalah menciptakan selubung mielin
+                            disekitar akson, neuron, atau serabut saraf.</li>
+                        <li><strong>Selubung mielin</strong> Adalah selubung sel saraf yang mengelilingi akson, tidak
+                            berinti dan terdiri dari subtansi lemak sehingga berwarna putih. Pada bagian selubung mielin
+                            ditambah pada rangkaian sel-sel schwan anggota dari sel glia, berfungsi untuk membentuk
+                            selubung yang disebut sebagai mielin.</li>
+                        <li><strong>Nodus renvier</strong> Adalah bagain atau titik pada akson yang tidak terbungkus
+                            selubung mielin. Nodus renvier memiliki diameter sekitar 1 mikrometer. Nodus renvier
+                            ditemukan oleh Luwis-Antoine Ranvier dan Ziza. Selubung mielin berfungsi sebagai pelindung
+                            akson dan membungkusnya, tetapi selubung ini tidak membungkus secara keseluruhan dan yang
+                            tidak terbungkus merupakan nodus ranvier. Nodus ranvier berfungsi untuk mempercepat impuls
+                            saraf.</li>
+                        <li><strong>Sinapsis</strong> Adalah titik temu antara terminal akson salah satu neuron dengan
+                            neuron lain. Sinapsis dibentuk oleh terminal akson yang membengkak.</li>
+                    </ol>
+                </div>
+
+                <div class="sub-section">
+                    <h3>3. Mekanisme kerja sistem saraf</h3>
+
+                    <div class="info-box">
+                        <p><strong>1. Gerak Sadar</strong></p>
+                    </div>
+
+                    <!-- FOTO DIAGRAM DI ATAS -->
+                    <div class="image-container">
+                        <img src="assets/images/gerak-sadar.png" alt="Diagram Gerak Sadar" class="content-image">
+                    </div>
+
+                    <!-- VIDEO DI BAWAH FOTO -->
+                    <div class="embed-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/video/video2.mp4" type="video/mp4">
+                            Browser Anda tidak mendukung pemutaran video.
+                        </video>
+                    </div>
+                    <p class="image-caption">Video animasi mekanisme gerak sadar pada manusia</p>
+
+                    <div class="info-box">
+                        <p><strong>2. Gerak Refleks</strong></p>
+                    </div>
+
+                    <!-- FOTO DIAGRAM DI ATAS -->
+                    <div class="image-container">
+                        <img src="assets/images/gerak-refleks.png" alt="Diagram Gerak Refleks" class="content-image">
+                    </div>
+
+                    <!-- VIDEO DI BAWAH FOTO -->
+                    <div class="embed-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/video/video1.mp4" type="video/mp4">
+                            Browser Anda tidak mendukung pemutaran video.
+                        </video>
+                    </div>
+                    <p class="image-caption">Video animasi mekanisme gerak refleks pada manusia</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sistem Indra -->
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>👁️ Sistem Indra</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <p>Sistem indra atau yang biasa kita kenal dengan panca indra terdiri dari 5 indra, yaitu:</p>
+
+                <div class="sub-section">
+                    <h3>1. Mata (indra penglihatan)</h3>
+                    <p>Mata berfungsi untuk mendeteksi cahaya dan mengubahnya menjadi impuls elektrokimia di sel saraf.
+                        Secara sederhana, mata memungkinkan kita melihat bentuk, warna, dan gerakan benda di sekitar.
+                        Bagian-bagian mata yaitu:</p>
+                    <ol>
+                        <li><strong>Otot rekdus medial</strong>, berfungsi untuk menggerakkan bola mata kearah medial,
+                            yaitu kearah dalam atau mendekati hidung</li>
+                        <li><strong>Saraf optic</strong> atau disebut juga saraf kranial II berfungsi untuk meneruskan
+                            informasi visual benda yang diterima retina menuju ke otak. Saraf optic inilah yang membuat
+                            kita dapat mengetahui bagaimana bentuk suatu benda yang kita lihat. Jika bagian mata ini
+                            rusak, maka kita tidak akan bisa melihat</li>
+                        <li><strong>Pupil</strong>, bagian lingkaran hitam pada bola mata. Fungsi pupil Adalah tempat
+                            masuknya Cahaya kedalam mata sekaligus mengatur Cahaya yang masuk</li>
+                        <li><strong>Iris</strong>, berfungsi mengatur banyaknya Cahaya yang diteruskan ke mata. Caranya
+                            Adalah dengan mengubah apertura pupil</li>
+                        <li><strong>Badan silaris</strong>, berfungsi untuk menjaga agar lensa tetap pada tempatnya,
+                            mengubah bentuk lensa sehingga Cahaya dapat difokuskan pada retina</li>
+                        <li><strong>Skelera</strong>, bagian dinding putih mata, memberikan perlindungan terhadap isi
+                            bola mata.</li>
+                        <li><strong>Retina</strong>, lembaran transparansi tipis di bagian belakang bola mata yang
+                            sensitif terhadap Cahaya. Fungsinya Adalah menangkap bayangan benda</li>
+                        <li><strong>Macula</strong> bagian yang terdapat di Tengah retain yang berwarna kuning cerah.
+                            Bagian mat aini sangat berperan dalam penglihatan kita sehingga bisa melihat objek dengan
+                            baik</li>
+                        <li><strong>Arteri</strong>, fungsi utama arteri pada mata Adalah untuk membawa oksigen dari
+                            nutrisi penting seperti glukosa ke jaringan-jaringan mata</li>
+                        <li><strong>Lensa mata</strong> berfungsi untuk memfokuskan Cahaya yang masuk ke mata agar
+                            sampai ke makula</li>
+                    </ol>
+                    <p><strong>Video mekanisme penerimaan rangsang indra penglihatan:</strong></p>
+                    <div class="embed-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/video/MEKANISME MATA.mp4" type="video/mp4">
+                            Browser Anda tidak mendukung pemutaran video.
+                        </video>
+                    </div>
+                    <p><strong>Diagram alur mekanisme penerimaan rangsang indra penglihatan:</strong></p>
+                    <div class="image-container">
+                        <img src="assets/images/mata.jpg" alt="Diagram alur indra penglihatan"
+                            class="content-image">
+                    </div>
+                </div>
+
+                <div class="sub-section">
+                    <h3>2. Telinga (indra pendengaran)</h3>
+                    <p>Telinga memiliki peran ganda yang sangat penting. Selain menangkap gelombang suara, telinga
+                        bagian dalam juga bertanggung jawab atas sistem keseimbangan tubuh. Bagian-bagian telinga yaitu:
+                    </p>
+                    <ol>
+                        <li><strong>Daun telinga</strong>, berfungsi untuk menangkap dan mengumpulkan gelombang bunyi
+                            dari lingkungan sekitar, lalu mengarahkannya ke dalam saluran telinga</li>
+                        <li><strong>Saluran telinga</strong>, berfungsi sebagai lorong jalannya bunyi menuju gendang
+                            telinga. Saluran ini juga memproduksi serumen (kotoran telinga) untuk melindungi telinga
+                            dari kotoran dan serangga</li>
+                        <li><strong>Gendang telinga</strong>, selaput tipis yang berfungsi menangkap getaran bunyi dari
+                            saluran telinga dan mengubahnya menjadi getaran mekanis.</li>
+                        <li><strong>Tulang martil</strong>, berfungsi menerima getaran dari gendang telinga</li>
+                        <li><strong>Tulang landasan</strong>, berfungsi meneruskan getaran dari tulang martil</li>
+                        <li><strong>Tulang sanggurdi</strong>, tulang terkecil di tubuh yang berfungsi memperkuat
+                            getaran dan meneruskannya ke telinga bagian dalam melalui jendela oval.</li>
+                        <li><strong>Kanalis semisirkularis</strong>, terdiri dari tiga saluran yang berfungsi sebagai
+                            alat keseimbangan tubuh, mendeteksi posisi dan gerakan kepala.</li>
+                        <li><strong>Rumah siput (koklea)</strong>, bagian berbentuk spiral yang berisi cairan dan sel
+                            rambut sensorik. Fungsinya adalah mengubah getaran mekanis menjadi sinyal listrik (impuls
+                            saraf)</li>
+                        <li><strong>Saraf vestibular</strong>, saraf khusus yang bertugas mengirimkan informasi
+                            keseimbangan dari kanalis semisirkularis ke otak.</li>
+                        <li><strong>Saraf pendengaran</strong>, bertugas mengirimkan impuls listrik dari koklea ke otak
+                            untuk diterjemahkan sebagai suara yang kita dengar.</li>
+                    </ol>
+                    <p><strong>Video mekanisme penerimaan rangsangan indra pendengaran:</strong></p>
+                    <div class="embed-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/video/MEKANISME TELINGA.mp4" type="video/mp4">
+                            Browser Anda tidak mendukung pemutaran video.
+                        </video>
+                    </div>
+                    <p><strong>Diagram alur mekanisme penerimaan rangsangan indra pendengaran:</strong></p>
+                    <div class="image-container">
+                        <img src="assets/images/telinga.jpg" alt="Diagram alur indra pendengaran"
+                            class="content-image">
+                    </div>
+                </div>
+
+                <div class="sub-section">
+                    <h3>3. Hidung (indra penciuman)</h3>
+                    <p>Fungsi utama hidung yaitu untuk mengenali bau (aroma) dan menyaring serta melembabkan udara
+                        pernapasan. Bagian-bagian hidung diantaranya yaitu:</p>
+                    <ol>
+                        <li><strong>Lubang hidung</strong> berfungsi sebagai tempat masuknya udara</li>
+                        <li><strong>Rongga hidung</strong>, berfungsi sebagai tempat masuknya udara menuju tenggorokan
+                            dan menjaga kelembapan, suhu, dan tekanan udara</li>
+                        <li><strong>Selaput lender</strong>, berfungsi untuk menghasilkan mucus atau ingus</li>
+                        <li><strong>Silia (rambut hidung)</strong>, berfungsi untuk menyaring kotoran yang terbawa udara
+                            yang masuk</li>
+                        <li><strong>Saraf pembau</strong>, sebagai penerima rangsang berupa bau. Serta sebagai reseptor
+                            utama indra penciuman</li>
+                        <li><strong>Saraf menuju otak</strong>, berfungsi mengirimkan informasi berupa impuls kepada
+                            otak</li>
+                        <li><strong>Sinus</strong>, berfungsi melembabkan dan menyaring udara</li>
+                        <li><strong>Tulang hidung atau nasal bone</strong> terdiri dari beberapa bagian, salah satunya
+                            Adalah tulang vomer atau basal bone yang terletak di bagian bawah atau dasar hidung</li>
+                        <li><strong>Nasofaring</strong>, berfungsi mengatur tekanan udara dan melindungi hidung serta
+                            organ pernapasan lain dari infeksi</li>
+                    </ol>
+                    <p><strong>Video mekanisme penerimaan rangsangan indra penciuman:</strong></p>
+                    <div class="embed-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/video/MEKANISME HIDUNG.mp4" type="video/mp4">
+                            Browser Anda tidak mendukung pemutaran video.
+                        </video>
+                    </div>
+                    <p><strong>Diagram alur mekanisme penerimaan rangsangan indra penciuman:</strong></p>
+                    <div class="image-container">
+                        <img src="assets/images/hidung.jpg" alt="Diagram alur indra penciuman"
+                            class="content-image">
+                    </div>
+                </div>
+
+                <div class="sub-section">
+                    <h3>4. Lidah (indra pengecap)</h3>
+                    <p>Permukaan lidah tertutup oleh bintil-bintil kecil bernama papila yang berisi reseptor rasa.
+                        Bagian-bagian lidah diantaranya yaitu:</p>
+                    <ol>
+                        <li><strong>Bagian lidah perasa manis</strong>, merupakan bagian ujung depan lidah dan bagian
+                            ini berfungsi untuk merasakan rasa manis pada makanan atau minuman yang dikonsumsi</li>
+                        <li><strong>Bagian lidah perasa asin</strong>, merupakan bagian samping depan kanan dan kiri
+                            lidah dan bagian ini berfungsi untuk merasakan rasa asin pada makanan atau minuman yang
+                            dikonsumsi</li>
+                        <li><strong>Bagian lidah perasa asam</strong>, merupakan bagian samping kanan dan kiri belakang
+                            lidah dan bagian ini berfungsi untuk merasakan rasa asam pada makanan atau minuman yang
+                            dikonsumsi</li>
+                        <li><strong>Bagian lidah perasa pahit</strong>, merupakan bagian ujung belakang lidah dan bagian
+                            ini berfungsi untuk merasakan rasa pahit pada makanan atau minuman yang dikonsumsi</li>
+                        <li><strong>Papilla</strong> Adalah tonjolan kecil yang melapisi permukaan lidah. Fungsi papilla
+                            Adalah membuat seseorang bisa mengecap rasa makanan dan minuman yang dikonsumsi</li>
+                        <li><strong>Amandel</strong>, adalh organ kecil yang terletak di sisi kanan dan kiri ujung
+                            belakang rongga mulut. Fungsi amandel Adalah menahan benda-benda asing yang akan masuk ke
+                            paru-paru melalui tenggorokan. Selain itu amandel juga membantu menghasilkan sel darah putih
+                            dan antibodi</li>
+                        <li><strong>Tonsil lingual</strong>, Adalah Kumpulan sel-sel pelindung yang terletak dibelakang
+                            rongga mulut di dasar lidah. Fungsi tonsil lingual Adalah melindungi tubuh dari gangguan
+                            kuman-kuman yang bisa masuk melalui mulut</li>
+                    </ol>
+                    <p><strong>Video mekanisme penerimaan rangsangan oleh indra pengecap:</strong></p>
+                    <div class="embed-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/video/MEKANISME LIDAH.mp4" type="video/mp4">
+                            Browser Anda tidak mendukung pemutaran video.
+                        </video>
+                    </div>
+                    <p><strong>Diagram alur penerimaan rangsangan oleh indra pengecap:</strong></p>
+                    <div class="image-container">
+                        <img src="assets/images/lidah.jpg" alt="Diagram alur indra pengecap"
+                            class="content-image">
+                    </div>
+                </div>
+
+                <div class="sub-section">
+                    <h3>5. Kulit (indra peraba)</h3>
+                    <p>Kulit adalah organ terluas pada tubuh manusia. Di dalamnya terdapat berbagai ujung saraf yang
+                        peka terhadap rangsangan dari luar. Fungsi utama kulit merasakan sentuhan, tekanan suhu
+                        (panas/dingin) dan nyeri. Beberapa bagian kulit yaitu:</p>
+                    <ol>
+                        <li><strong>Epidermis</strong>, Adalah lapisan kulit paling luar yang berfungsi sebagai
+                            pelindung antara tubuh dengan lingkungan sekitar</li>
+                        <li><strong>Dermis</strong>, Adalah lapisan kulit yang terdiri dari serat elastin dan kolagen
+                            yang memberikan kekenyalan dan kekuatan pada kulit. Pada lapisan dermis juga terdapat
+                            pembuluh darah, saraf, kelenjar keringat, dan folikel rambut</li>
+                        <li><strong>Lapisan hipodermis</strong> terdiri dari jaringan lemak dan serat kolagen yang
+                            berfungsi sebagai penyimpan energi, pelindung, dan pengatur suhu tubuh</li>
+                        <li><strong>Rambut</strong>, fungsi rambut Adalah membantu mengontrol suhu tubuh, melindungi
+                            dari paparan sinar matahari, dan melindungi kulit dari cedera</li>
+                        <li><strong>Folikel rambut</strong>, Adalah kantong kecil pada kulit sebagai tempat rambut
+                            tumbuh</li>
+                        <li><strong>Kelenjar minyak</strong>, Adalah melepaskan sebum (minyak) ke folikel rambut serta
+                            melapisi dan melindungi batang rambut agar tetap lembab</li>
+                        <li><strong>Reseptor sensorik</strong>, berfungsi sebagai penerima rangsangan atau penerima
+                            informasi dari luar</li>
+                        <li><strong>Kelenjar keringat</strong>, berfungsi menghasilkan keringat yang dikeluarkan oleh
+                            lapisan subkulit kecil (stratum korneum) ke permukaan kulit</li>
+                        <li><strong>Saraf</strong>, berfungsi mengirimkan sensai berupa sentuhan, ras anyeri, gatal,
+                            kesemutan, mati rasa, atau sensasi terbakar</li>
+                        <li><strong>Pembuluh darah</strong>, berfungsi mengalirkan nutrisi dan oksigen ke dalam sel-sel
+                            pembentuk kulit sekaligus mengangkut limbah dan karbondioksida untuk dikeluarkan dari tubuh
+                        </li>
+                    </ol>
+                    <p><strong>Video penerimaan rangsangan indra peraba:</strong></p>
+                    <div class="embed-wrapper">
+                        <video controls preload="metadata">
+                            <source src="assets/video/MEKANISME KULIT.mp4" type="video/mp4">
+                            Browser Anda tidak mendukung pemutaran video.
+                        </video>
+                    </div>
+                    <p><strong>Diagram alur penerimaan rangsangan indra peraba:</strong></p>
+                    <div class="image-container">
+                        <img src="assets/images/kulit.jpg" alt="Diagram alur indra peraba"
+                            class="content-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sistem Endokrin -->
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>💉 Sistem Endokrin</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <p>Beberapa hormon utama dalam tubuh manusia diantaranya yaitu:</p>
+
+                <div class="sub-section">
+                    <h3>1. Hormon adrenalin</h3>
+                    <p>Hormon ini diproduksi oleh kelenjar adrenal yang terletak di atas ginjal. Adrenalin sering
+                        disebut sebagai hormon "lawan atau lari" (fight or flight). Fungsi utamanya yaitu mempersiapkan
+                        tubuh untuk menghadapi situasi darurat atau stres dengan meningkatkan detak jantung, mempercepat
+                        pernapasan, dan meningkatkan aliran darah ke otot.</p>
+                </div>
+
+                <div class="sub-section">
+                    <h3>2. Hormon insulin</h3>
+                    <p>Insulin diproduksi oleh sel-sel beta di dalam organ pankreas. Hormon ini bekerja seperti
+                        "kunci" yang membuka sel agar bisa menyerap gula. Fungsi utama mengatur dan menurunkan kadar
+                        gula
+                        darah dengan cara mengubah glukosa menjadi energi atau menyimpannya sebagai cadangan (glikogen)
+                        di
+                        dalam hati dan otot.</p>
+                </div>
+
+                <div class="sub-section">
+                    <h3>3. Hormon tiroksin</h3>
+                    <p>Hormon ini diproduksi oleh kelenjar tiroid yang terletak di bagian leher. Tiroksin sangat
+                        berpengaruh pada kecepatan kerja organ tubuh. Fungsi utama mengatur laju metabolisme tubuh
+                        (seberapa cepat tubuh membakar kalori), mempengaruhi suhu tubuh, serta mendukung perkembangan
+                        saraf dan otak pada anak-anak</p>
+                </div>
+
+                <div class="sub-section">
+                    <h3>4. Hormon pertumbuhan</h3>
+                    <p>Hormon ini diproduksi oleh kelenjar pituitari (hipofisis) yang terletak di dasar otak. Kadar
+                        hormon ini biasanya mencapai puncak pada masa pubertas. Fungsi utama hormon ini yaitu memicu
+                        pertumbuhan tulang dan otot, mengatur komposisi tubuh (lemak dan massa otot), serta membantu
+                        proses perbaikan jaringan dan sel-sel yang rusak</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Narkotika dan Psikotropika -->
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>⚠️ Pengaruh Narkotika dan Psikotropika</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <div class="warning-box">
+                    <p><strong>Narkotika</strong> adalah zat yang berasal dari tanaman atau bukan tanaman
+                        yang
+                        menyebabkan penurunan atau perubahan kesadaran, hilangnya rasa nyeri, dan dapat
+                        menimbulkan
+                        ketergantungan.</p>
+                    <p><strong>Psikotropika</strong> adalah zat atau obat yang berkhasiat psikoaktif melalui
+                        pengaruh
+                        selektif pada susunan saraf pusat yang menyebabkan perubahan khas pada aktivitas
+                        mental dan
+                        perilaku.</p>
+                </div>
+
+                <div class="sub-section">
+                    <h3>1. Ganja</h3>
+                    <div class="image-container">
+                        <img src="assets/images/ganja.png" alt="Ganja" class="content-image">
+                    </div>
+                    <p><strong>Mekanisme kerja: Masuk melalui Pintu belakang</strong></p>
+                    <p>Di otak kita, ada sistem komunikasi alami yang disebut sistem endocannabinoid. Anggap
+                        saja
+                        ini
+                        seperti sistem pesan teks antara neuron (sel saraf) untuk menjaga keseimbangan tubuh
+                        (mengatur
+                        nafsu makan, tidur, dan suasana hati). Tubuh kita secara alami memproduksi zat kimia
+                        bernama
+                        anandamide (mirip ganja alami) yang bekerja dengan tenang dan teratur.</p>
+                    <p>Ketika seseorang menggunakan ganja, zat aktifnya yang disebut THC (bukan zat alami
+                        tubuh)
+                        masuk
+                        dan meniru anandamide. Tapi bedanya, THC tidak bekerja dengan tenang. Dia
+                        "membanjiri"
+                        reseptor
+                        otak secara berlebihan, mematikan sinyal penghambat, dan membiarkan dopamine (zat
+                        kimia
+                        pemberi
+                        rasa senang) mengalir tanpa henti.</p>
+                    <p>Akibatnya, pengguna merasa euforia berlebihan (high). Namun, karena sistem
+                        keseimbangan
+                        diacak
+                        -acak, dampaknya bisa membuat gerakan jadi lambat, memori terganggu, dan sulit
+                        fokus.</p>
+                </div>
+
+                <div class="sub-section">
+                    <h3>2. Ekstasi</h3>
+                    <div class="image-container">
+                        <img src="assets/images/ekstasi.png" alt="Ekstasi" class="content-image">
+                    </div>
+                    <p><strong>Mekanisme kerja: Banjir serotonin</strong></p>
+                    <p>Ekstasi bekerja dengan cara memanipulasi serotonin, yaitu zat kimia otak yang
+                        mengatur
+                        suasana
+                        hati, tidur, dan rasa sakit. Normalnya, serotonin dilepaskan sedikit demi sedikit
+                        sesuai
+                        kebutuhan, lalu diserap kembali oleh neuron (transporter) untuk didaur ulang.</p>
+                    <p>Ketika ekstasi masuk, zat ini "membajak" sistem daur ulang tersebut. Ekstasi memaksa
+                        transporter
+                        untuk bekerja terbalik: alih-alih menyerap kembali, ia malah memuntahkan cadangan
+                        serotonin
+                        secara besar-besaran ke celah sinaps (ruang antar sel saraf). Hasilnya adalah banjir
+                        serotonin
+                        yang luar biasa.</p>
+                    <p>Akibatnya, reseptor di otak menjadi terlalu terstimulasi, menciptakan perasaan energi
+                        berlebih,
+                        keterbukaan emosional, dan duni terasa lebih intens. Namun, karena cadangan
+                        serotonin
+                        dikuras
+                        habis, setelah efeknya hilang, pengguna akan mengalami "crash"—perasaan depresi
+                        parah,
+                        kelelahan
+                        ekstrem, dan kecemasan.</p>
+                </div>
+
+                <div class="sub-section">
+                    <h3>3. Shabu (Metamfetamin)</h3>
+                    <div class="image-container">
+                        <img src="assets/images/shabu.png" alt="Shabu" class="content-image">
+                    </div>
+                    <p><strong>Mekanisme kerja: Penipu dopamin yang licik</strong></p>
+                    <p>Dopamin adalah zat kimia otak yang membuat kita merasa senang saat mencapai sesuatu
+                        (sistem
+                        reward). Normalnya, dopamin dilepaskan saat kita makan enak atau mendapat hadiah,
+                        lalu
+                        segera
+                        dibersihkan kembali.</p>
+                    <p>Shabu bekerja dengan cara meniru dopamine. Karena struktur kimianya mirip, dia bisa
+                        menyusup
+                        masuk ke dalam neuron dopamin. Begitu di dalam, shabu tidak hanya diam; ia menendang
+                        keluar
+                        dopamin asli dari tempat penyimpanannya. Lebih parah lagi, ia memblokir jalan keluar
+                        (reuptake),
+                        sehingga dopamin terperangkap di celah sinaps dan terus menerus menstimulasi
+                        reseptor.</p>
+                    <p>Hasilnya adalah rasa senang dan percaya diri yang meledak-ledak. Tapi ini sangat
+                        merusak
+                        ujung
+                        saraf. Penggunaan jangka Panjang bisa mematikan kemampuan otak untuk merasa Bahagia
+                        secara
+                        alami
+                        (anhedonia).</p>
+                </div>
+
+                <div class="sub-section">
+                    <h3>4. Heroin</h3>
+                    <div class="image-container">
+                        <img src="assets/images/heroin.png" alt="Heroin" class="content-image">
+                    </div>
+                    <p><strong>Mekanisme kerja: Pemadam rasa sakit yang mematikan</strong></p>
+                    <p>Di tubuh kita ada sistem opiate alami (endorfin) yang berfungsi meredakan rasa sakit
+                        dan
+                        memberi
+                        rasa tenang. Heroin masuk dan langsung menempel pada reseptor opiate ini, tapi
+                        dengan
+                        kekuatan
+                        berkali-kali lipat lebih besar.</p>
+                    <p>Ketika heroin mengaktifkan reseptor ini, ia membanjiri otak dengan dopamin dan secara
+                        bersamaan
+                        menekan aktivitas batang otak (yang mengatur pernapasan dan detak jantung). Ini
+                        menciptakan
+                        perasaan tenang yang luar biasa (rush) dan menghilangkan semua rasa sakit fisik
+                        maupun
+                        emosional
+                        dalam sekejap.</p>
+                    <p>Bahayanya, karena ia menekan pusat pernapasan di batang otak, overdosis heroin bisa
+                        membuat
+                        tubuh
+                        "lupa" untuk bernapas, menyebabkan kematian mendadak.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gangguan Sistem Koordinasi -->
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>🏥 Gangguan Sistem Koordinasi</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <p>Gangguan atau kelainan pada sistem saraf adalah kondisi medis yang mempengaruhi cara kerja otak,
+                    sumsum tulang belakang, atau saraf tepi. Karena sistem saraf adalah "pusat komando" tubuh, gangguan
+                    di sini bisa mengacaukan segalanya, mulai dari cara kita bergerak, berbicara, bernapas, hingga cara
+                    kita berpikir. Beberapa gangguan pada sistem koordinasi diantaranya yaitu:</p>
+
+                <div class="sub-section">
+                    <h3>1. Gangguan Sistem Saraf (Stroke)</h3>
+                    <div class="image-container">
+                        <img src="assets/images/gangguan-sistem-saraf.png" alt="Stroke" class="content-image">
+                    </div>
+                    <p>Gangguan pada sistem saraf adalah gangguan yang terjadi disebabkan oleh terganggunya sistem
+                        saraf, contoh salah satu gangguan pada sistem saraf yaitu <strong>Stroke</strong>. Stroke adalah
+                        gangguan pada sistem saraf yang terjadi ketika aliran darah ke otak terhenti atau berkurang,
+                        sehingga sel-sel otak kekurangan oksigen dan nutrisi. Akibatnya, sel otak dapat rusak atau mati,
+                        yang menyebabkan gangguan fungsi tubuh seperti kelumpuhan, gangguan bicara, atau penurunan
+                        kesadaran.</p>
+                    <p>Secara umum, stroke disebabkan oleh gangguan pembuluh darah otak, biasanya karena penumpukan
+                        lemak, gumpalan darah, kadar kolesterol yang tinggi, hipertensi. Dalam hitungan menit, sel-sel
+                        otak mulai mati.</p>
+                    <p><strong>Berdasarkan mekanismenya, stroke dibagi menjadi dua jenis utama:</strong></p>
+                    <ol>
+                        <li><strong>Stroke Iskemik (Penyumbatan)</strong> - Ini adalah jenis yang paling umum (sekitar
+                            87% kasus). Mekanismenya mirip dengan serangan jantung, tetapi terjadi di otak. Aliran darah
+                            terhenti karena adanya hambatan di pembuluh darah arteri. Penyebabnya karena gumpalan darah
+                            terbentuk langsung di arteri otak, biasanya akibat penumpukan lemak (aterosklerosis).
+                            Gumpalan darah terbentuk di bagian tubuh lain (seringkali di jantung) lalu terbawa aliran
+                            darah hingga tersangkut di pembuluh darah otak yang lebih kecil.</li>
+                        <li><strong>Stroke Hemoragik (Pecah Pembuluh Darah)</strong> - Jenis ini lebih mematikan karena
+                            menyebabkan tekanan besar di dalam tengkorak. Pembuluh darah di otak bocor atau pecah,
+                            sehingga darah keluar dan merusak jaringan di sekitarnya. Penyebabnya yaitu tekanan darah
+                            tinggi kronis yang membuat dinding pembuluh darah rapuh. Adanya bagian pembuluh darah yang
+                            menggelembung dan tipis, yang sewaktu-waktu bisa pecah.</li>
+                    </ol>
+                    <p><strong>Upaya Pencegahan Stroke:</strong></p>
+                    <ul>
+                        <li>Menjaga tekanan darah tetap normal</li>
+                        <li>Mengonsumsi makanan sehat dan bergizi seimbang</li>
+                        <li>Mengurangi makanan tinggi lemak dan garam</li>
+                        <li>Berolahraga secara teratur</li>
+                        <li>Mengontrol kadar gula dan kolesterol darah</li>
+                        <li>Mengelola stres dengan baik</li>
+                        <li>Melakukan pemeriksaan kesehatan secara rutin</li>
+                    </ul>
+                </div>
+
+                <div class="sub-section">
+                    <h3>2. Gangguan Sistem Indra (Katarak)</h3>
+                    <div class="image-container">
+                        <img src="assets/images/gangguan-sistem-indra.png" alt="Katarak" class="content-image">
+                    </div>
+                    <p>Gangguan pada sistem indra adalah gangguan yang terjadi pada panca indra kita. Contoh gangguan
+                        pada sistem indra salah satu diantaranya yaitu <strong>Katarak</strong>. Katarak adalah
+                        kekeruhan pada lensa mata yang menghalangi cahaya masuk ke retina, menyebabkan penglihatan
+                        kabur, buram, atau silau.</p>
+                    <p><strong>Penyebab Katarak:</strong></p>
+                    <p>Penyebab utama katarak adalah perubahan struktur protein di dalam lensa mata. Lensa mata sebagian
+                        besar terdiri dari air dan protein. Seiring bertambahnya usia, protein-protein ini mulai
+                        menggumpal. Gumpalan inilah yang menciptakan noda keruh pada lensa. Selain itu juga dikarenakan
+                        faktor risiko seperti:</p>
+                    <ul>
+                        <li>Penuaan (proses degeneratif alami)</li>
+                        <li>Paparan sinar UV (ultraviolet) dalam jangka panjang</li>
+                        <li>Penyakit metabolik seperti diabetes</li>
+                        <li>Trauma atau cedera pada mata</li>
+                    </ul>
+                    <p><strong>Gejala Katarak:</strong></p>
+                    <ul>
+                        <li>Pandangan kabur, berkabut</li>
+                        <li>Warna terlihat pudar atau kekuningan</li>
+                        <li>Penglihatan ganda pada satu mata</li>
+                        <li>Kesulitan melihat saat malam hari</li>
+                    </ul>
+                    <p><strong>Mekanisme Gangguan Penglihatan pada Katarak:</strong></p>
+                    <p>Proses penerimaan rangsang cahaya (visual) pada mata katarak mengalami gangguan yang signifikan
+                        pada tahap pembiasan (refraksi): cahaya terhalang dan diserap oleh gumpalan protein → cahaya
+                        terpencar (scattering) ke segala arah sebelum mencapai retina → retina menerima gambar yang
+                        buram, redup, dan terdistorsi.</p>
+                    <p><strong>Upaya Pencegahan Katarak:</strong></p>
+                    <ul>
+                        <li>Menggunakan kacamata hitam untuk melindungi mata dari sinar UV</li>
+                        <li>Mengonsumsi makanan kaya antioksidan (vitamin C dan E)</li>
+                        <li>Mengonsumsi sayuran hijau secara rutin</li>
+                        <li>Memeriksakan mata secara berkala</li>
+                    </ul>
+                </div>
+
+                <div class="sub-section">
+                    <h3>3. Gangguan Sistem Endokrin (Diabetes)</h3>
+                    <div class="image-container">
+                        <img src="assets/images/gangguan-sistem-endokrin.png" alt="Diabetes" class="content-image">
+                    </div>
+                    <p>Gangguan pada sistem endokrin adalah gangguan yang menyerang atau terjadi pada sistem hormon
+                        manusia. Contoh salah satu gangguan pada sistem endokrin yaitu <strong>Diabetes</strong>.
+                        Diabetes adalah kondisi di mana kadar gula (glukosa) darah terlalu tinggi karena tubuh tidak
+                        bisa menggunakan insulin dengan efektif atau tidak memproduksi cukup insulin.</p>
+
+                    <p><strong>Tabel Kadar Gula Darah:</strong></p>
+                    <table border="1" style="width:100%; border-collapse: collapse; margin-bottom: 1rem;">
+                        <tr style="background-color: rgba(0, 245, 212, 0.2);">
+                            <th style="padding: 8px;">Kategori</th>
+                            <th style="padding: 8px;">Puasa (8 jam tidak makan)</th>
+                            <th style="padding: 8px;">2 jam setelah makan</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;">Normal</td>
+                            <td style="padding: 8px;">70 - 99 mg/dL</td>
+                            <td style="padding: 8px;">kurang dari 140 mg/dL</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;">Prediabetes</td>
+                            <td style="padding: 8px;">100 - 125 mg/dL</td>
+                            <td style="padding: 8px;">140 - 199 mg/dL</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;">Diabetes</td>
+                            <td style="padding: 8px;">≥ 126 mg/dL</td>
+                            <td style="padding: 8px;">≥ 200 mg/dL</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Mekanisme Terjadinya Diabetes:</strong></p>
+                    <p>Mekanisme tubuh terkena diabetes berpusat pada kegagalan tubuh dalam mengelola glukosa (gula
+                        darah). Glukosa adalah sumber bahan bakar utama sel tubuh, namun untuk bisa masuk ke dalam sel,
+                        ia membutuhkan "kunci" yang disebut <strong>Insulin</strong>. Ketika mekanisme ini rusak dan
+                        gula darah terus tinggi (Hiperglikemia), terjadi kerusakan sistemik:</p>
+                    <ul>
+                        <li><strong>Glukotoksisitas:</strong> Gula darah yang tinggi merusak dinding pembuluh darah
+                            kecil (kapiler)</li>
+                        <li><strong>Gangguan Saraf:</strong> Gula tinggi mengganggu transmisi sinyal saraf (neuropati)
+                        </li>
+                        <li><strong>Komplikasi Organ:</strong> Kerusakan pada pembuluh darah ini yang akhirnya
+                            menyebabkan gagal ginjal, kebutaan, dan penyakit jantung</li>
+                    </ul>
+
+                    <p><strong>Penyebab Diabetes:</strong></p>
+                    <ul>
+                        <li>Gaya hidup tidak sehat</li>
+                        <li>Obesitas</li>
+                        <li>Faktor genetik (resistensi insulin)</li>
+                    </ul>
+
+                    <p><strong>Upaya Pencegahan Diabetes:</strong></p>
+                    <ul>
+                        <li>Menjaga berat badan ideal</li>
+                        <li>Mengurangi konsumsi gula dan karbohidrat olahan</li>
+                        <li>Rutin melakukan aktivitas fisik minimal 30 menit sehari</li>
+                        <li>Mengonsumsi makanan bergizi seimbang</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html" class="back-btn">← Menu Utama</a>
+            <a href="gallery.html" class="back-btn">Galeri Sistem Koordinasi →</a>
+        </div>
+    </main>
+
+    <script>
+        // Accordion functionality
+        document.querySelectorAll('.accordion').forEach(accordion => {
+            accordion.addEventListener('click', function () {
+                this.classList.toggle('active');
+                const content = this.querySelector('.accordion-content');
+                if (this.classList.contains('active')) {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    setTimeout(() => {
+                        if (this.classList.contains('active')) {
+                            content.style.maxHeight = 'none';
+                        }
+                    }, 600);
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    setTimeout(() => {
+                        content.style.maxHeight = '0';
+                    }, 10);
+                }
+
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(30);
+                }
+            });
+        });
+
+        // Back button haptic
+        document.querySelectorAll('.back-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(30);
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

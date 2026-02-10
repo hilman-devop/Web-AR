@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR-COORDINATION-SYSTEM</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2491/2491418.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 30%, #415a77 60%, #778da9 100%);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Animated particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(0, 180, 216, 0.15);
+            border-radius: 50%;
+            animation: pulse-float 12s infinite ease-in-out;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+        }
+
+        @keyframes pulse-float {
+
+            0%,
+            100% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: translateY(-80px) translateX(30px) scale(1.2);
+                opacity: 0.6;
+            }
+        }
+
+        /* Splash Screen */
+        #splash {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease, visibility 1s ease;
+            z-index: 1000;
+        }
+
+        #splash.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .logo {
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #00f5d4, #00b4d8, #48cae4, #00f5d4);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease infinite, pulse 2s ease-in-out infinite;
+            text-shadow: 0 0 40px rgba(0, 245, 212, 0.5);
+            text-align: center;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .loading {
+            font-size: clamp(1.1rem, 4vw, 1.5rem);
+            opacity: 0.9;
+            animation: fadeInOut 2s ease-in-out infinite;
+            color: #48cae4;
+            margin-top: 1rem;
+        }
+
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Main Menu */
+        #menu {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+            padding: 2rem 1.5rem 4rem;
+            width: 95%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #menu.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .header-img-container {
+            margin-bottom: 2rem;
+            animation: floatImage 4s ease-in-out infinite;
+        }
+
+        @keyframes floatImage {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        .header-img {
+            max-width: 220px;
+            width: 80vw;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 20px 60px rgba(0, 180, 216, 0.4);
+            border: 5px solid rgba(0, 245, 212, 0.3);
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 6vw, 3rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #00f5d4, #48cae4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(0, 245, 212, 0.4);
+        }
+
+        p {
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            line-height: 1.6;
+            color: #e0e1dd;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        button {
+            position: relative;
+            width: 100%;
+            padding: clamp(1rem, 4vw, 1.4rem);
+            font-size: clamp(1.1rem, 4vw, 1.3rem);
+            font-weight: 600;
+            background: rgba(0, 180, 216, 0.15);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            border: 2px solid rgba(0, 245, 212, 0.3);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 245, 212, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        button:hover::before,
+        button:active::before {
+            width: 350px;
+            height: 350px;
+        }
+
+        button:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 40px rgba(0, 180, 216, 0.4);
+            border-color: rgba(0, 245, 212, 0.7);
+        }
+
+        button span {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+
+        .icon {
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
+        }
+
+        /* Footer */
+        .footer-section {
+            padding: 3rem 1.5rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px);
+            margin: 3rem 1rem 1rem;
+            border-radius: 30px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-item {
+            background: rgba(0, 180, 216, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 2px solid rgba(0, 245, 212, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 245, 212, 0.5);
+            box-shadow: 0 12px 35px rgba(0, 180, 216, 0.3);
+        }
+
+        .feature-icon {
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            margin-bottom: 0.8rem;
+        }
+
+        .feature-title {
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #00f5d4;
+        }
+
+        .feature-desc {
+            font-size: clamp(0.85rem, 3vw, 0.95rem);
+            opacity: 0.85;
+            line-height: 1.4;
+        }
+
+        .footer-info {
+            margin-top: 2rem;
+            opacity: 0.7;
+            font-size: clamp(0.85rem, 3vw, 0.95rem);
+            color: #778da9;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background-color: rgba(13, 27, 42, 0.95);
+            backdrop-filter: blur(12px);
+            overflow-y: auto;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(0, 180, 216, 0.15), rgba(65, 90, 119, 0.25), rgba(0, 245, 212, 0.1));
+            backdrop-filter: blur(25px);
+            border: 2px solid rgba(0, 245, 212, 0.4);
+            border-radius: 28px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 245, 212, 0.4);
+            border-radius: 4px;
+        }
+
+        .lkpd-group {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(0, 180, 216, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 245, 212, 0.2);
+        }
+
+        .lkpd-group h3 {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            margin-bottom: 1rem;
+            color: #00f5d4;
+        }
+
+        .button-pair {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .modal-link {
+            flex: 1;
+            min-width: 140px;
+            padding: clamp(0.9rem, 3vw, 1.2rem);
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            font-weight: 600;
+            border-radius: 20px;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .open-btn {
+            background: linear-gradient(135deg, #00b4d8, #48cae4);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #00f5d4, #00b4d8);
+        }
+
+        .modal-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 180, 216, 0.4);
+        }
+
+        .modal h2 {
+            font-size: clamp(1.6rem, 5vw, 2rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00f5d4, #48cae4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal p {
+            font-size: clamp(1rem, 3.5vw, 1.1rem);
+            margin-bottom: 1.5rem;
+            opacity: 0.95;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 36px;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+            color: #00f5d4;
+        }
+
+        /* Extra mobile optimizations */
+        @media (max-width: 480px) {
+            #menu {
+                padding: 1.5rem 1rem;
+            }
+
+            .button-group {
+                gap: 1rem;
+            }
+
+            .footer-section {
+                margin: 2rem 0.5rem 0.5rem;
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="particles" id="particles"></div>
+
+    <!-- Splash Screen -->
+    <div id="splash">
+        <div class="logo">AR-COORDINATION-SYSTEM</div>
+        <div class="loading">Sistem Koordinasi Manusia</div>
+    </div>
+
+    <!-- Main Menu -->
+    <div id="menu">
+        <div class="header-img-container">
+            <img src="https://cdn-icons-png.flaticon.com/512/2491/2491418.png" alt="Ilustrasi Sistem Koordinasi"
+                class="header-img">
+        </div>
+
+        <h1>AR-COORDINATION-SYSTEM</h1>
+        <p>Website Augmented Reality Edukasi<br>Sistem Koordinasi Kelas XI SMA</p>
+
+        <div class="button-group">
+            <button onclick="window.location.href='lead.html'">
+                <span><span class="icon">📚</span> Materi Pembelajaran</span>
+            </button>
+            <button onclick="window.location.href='gallery.html'">
+                <span><span class="icon">🧠</span> Galeri Sistem Koordinasi</span>
+            </button>
+            <button onclick="window.location.href='ar-scene.html'">
+                <span><span class="icon">🎯</span> Mulai AR</span>
+            </button>
+            <button onclick="openModal('lkpdModal')">
+                <span><span class="icon">📄</span> LKPD</span>
+            </button>
+            <button onclick="openModal('sumberModal')">
+                <span><span class="icon">📖</span> Sumber Belajar</span>
+            </button>
+            <button onclick="window.location.href='tutorial.html'">
+                <span><span class="icon">❓</span> Tutorial Penggunaan</span>
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-section">
+            <div class="footer-content">
+                <h2 style="margin-bottom: 1.5rem; color: #00f5d4;">✨ Fitur Unggulan</h2>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">📱</div>
+                        <div class="feature-title">Teknologi AR</div>
+                        <div class="feature-desc">Augmented Reality untuk pembelajaran interaktif</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🧠</div>
+                        <div class="feature-title">Model 3D</div>
+                        <div class="feature-desc">Model organ sistem koordinasi interaktif</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📚</div>
+                        <div class="feature-title">Edukatif</div>
+                        <div class="feature-desc">Materi sesuai kurikulum SMA Kelas XI</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🎮</div>
+                        <div class="feature-title">Interaktif</div>
+                        <div class="feature-desc">Belajar sambil berinteraksi</div>
+                    </div>
+                </div>
+                <div class="footer-info">
+                    <p>AR-COORDINATION-SYSTEM © 2026 | Sistem Koordinasi Manusia</p>
+                    <p style="margin-top: 0.5rem;">Dikembangkan untuk pendidikan Kelas XI SMA</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal LKPD -->
+    <div id="lkpdModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('lkpdModal')">×</span>
+            <h2>📄 LKPD</h2>
+            <p>Pilih LKPD sesuai pertemuan:</p>
+
+            <div class="lkpd-group">
+                <h3>Pertemuan 1</h3>
+                <div class="button-pair">
+                    <a href="assets/LKPD/LKPD PERTEMUAN 1.pdf" target="_blank" class="modal-link open-btn">Buka</a>
+                    <a href="assets/LKPD/LKPD PERTEMUAN 1.pdf" download class="modal-link download-btn">Download</a>
+                </div>
+            </div>
+
+            <div class="lkpd-group">
+                <h3>Pertemuan 2</h3>
+                <div class="button-pair">
+                    <a href="assets/LKPD/LKPD PERTEMUAN 2.pdf" target="_blank" class="modal-link open-btn">Buka</a>
+                    <a href="assets/LKPD/LKPD PERTEMUAN 2.pdf" download class="modal-link download-btn">Download</a>
+                </div>
+            </div>
+
+            <div class="lkpd-group">
+                <h3>Pertemuan 3</h3>
+                <div class="button-pair">
+                    <a href="assets/LKPD/LKPD PERTEMUAN 3.pdf" target="_blank" class="modal-link open-btn">Buka</a>
+                    <a href="assets/LKPD/LKPD PERTEMUAN 3.pdf" download class="modal-link download-btn">Download</a>
+                </div>
+            </div>
+
+            <div class="lkpd-group">
+                <h3>Pertemuan 4 & 5</h3>
+                <div class="button-pair">
+                    <a href="assets/LKPD/LKPD PERTEMUAN 4 DAN 5.pdf.pdf" target="_blank"
+                        class="modal-link open-btn">Buka</a>
+                    <a href="assets/LKPD/LKPD PERTEMUAN 4 DAN 5.pdf.pdf" download
+                        class="modal-link download-btn">Download</a>
+                </div>
+            </div>
+
+            <div class="lkpd-group">
+                <h3>Pertemuan 6</h3>
+                <div class="button-pair">
+                    <a href="assets/LKPD/LKPD PERTEMUAN 6.pdf" target="_blank" class="modal-link open-btn">Buka</a>
+                    <a href="assets/LKPD/LKPD PERTEMUAN 6.pdf" download class="modal-link download-btn">Download</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sumber Belajar -->
+    <div id="sumberModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('sumberModal')">×</span>
+            <h2>📖 Sumber Belajar</h2>
+            <p>Akses materi pembelajaran sesuai pertemuan:</p>
+            <a href="https://drive.google.com/drive/folders/1O4mO8EfGSh33qsMQnjr1ku6N4qve9exL" target="_blank"
+                class="modal-link">Pertemuan 1</a>
+            <a href="https://drive.google.com/drive/folders/1jat3xMoE2FY7nZm2zZBPZJJgiekKT4Ls" target="_blank"
+                class="modal-link">Pertemuan 2</a>
+            <a href="https://drive.google.com/drive/folders/1pFxQNiHQZYh36Y7jzvGBB6AUwAz9-JQh" target="_blank"
+                class="modal-link">Pertemuan 3</a>
+            <a href="https://drive.google.com/drive/folders/1GQ6ktXxdhaj8fwc980KMXI3HUZApgd6b" target="_blank"
+                class="modal-link">Pertemuan 4 & 5</a>
+            <a href="https://drive.google.com/drive/folders/1hkv-XkmNY7pTUvRfhS7MbNwS7tvSrZfs" target="_blank"
+                class="modal-link">Pertemuan 6</a>
+        </div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const count = window.innerWidth < 768 ? 15 : 25; // Kurangi di mobile
+
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 40 + 15;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 12 + 's';
+                p.style.animationDuration = (Math.random() * 8 + 10) + 's';
+                container.appendChild(p);
+            }
+        }
+
+        createParticles();
+
+        setTimeout(() => {
+            document.getElementById('splash').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('menu').classList.add('visible');
+            }, 500);
+        }, 3000);
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            if ('vibrate' in navigator) navigator.vibrate(30);
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        window.onclick = function (e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+
+</html>

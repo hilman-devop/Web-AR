@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Galeri Sistem Koordinasi - AR-COORDINATION</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2491/2491418.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 30%, #415a77 60%, #778da9 100%);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background circles */
+        .bg-circle {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(0, 245, 212, 0.05);
+            animation: float 20s infinite ease-in-out;
+            z-index: 0;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            right: -50px;
+            animation-delay: 7s;
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            top: 50%;
+            right: -125px;
+            animation-delay: 14s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(50px, -50px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-30px, 30px) scale(0.9);
+            }
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-img-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .header-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid rgba(0, 245, 212, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 180, 216, 0.4);
+            animation: rotateFloat 10s ease-in-out infinite;
+            object-fit: cover;
+        }
+
+        @keyframes rotateFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            75% {
+                transform: translateY(-15px) rotate(-5deg);
+            }
+        }
+
+        h1 {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #00f5d4, #48cae4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 5px 20px rgba(0, 180, 216, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            color: #e0e1dd;
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin: 3rem 0 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 180, 216, 0.1);
+            border-radius: 20px;
+            border: 2px solid rgba(0, 245, 212, 0.2);
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            color: #00f5d4;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: #e0e1dd;
+            opacity: 0.9;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto 1rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Khusus grid Endokrin agar lebih sering 2 kolom */
+        .endokrin-grid {
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        }
+
+        .gallery-item {
+            background: rgba(0, 180, 216, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 245, 212, 0.2);
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.6s ease both;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(0, 180, 216, 0.3);
+            border-color: rgba(0, 245, 212, 0.5);
+        }
+
+        .item-header {
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(0, 245, 212, 0.1);
+        }
+
+        .item-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+            color: #00f5d4;
+        }
+
+        /* Untuk embed Sketchfab (saraf & indra) */
+        .embed-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: rgba(0, 0, 0, 0.3);
+            flex: 1;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Untuk deskripsi Endokrin */
+        .item-description {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.5rem;
+            text-align: justify;
+            line-height: 1.6;
+            hyphens: auto;
+            word-break: break-word;
+        }
+
+        .item-description p {
+            margin: 0 0 1.5rem 0;
+            opacity: 0.9;
+        }
+
+        .hormone-btn {
+            align-self: flex-start;
+            padding: 0.85rem 2rem;
+            font-size: 1rem;
+            background: rgba(0, 180, 216, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 245, 212, 0.3);
+        }
+
+        /* Back buttons */
+        .back-link {
+            text-align: center;
+            animation: fadeIn 1s ease 0.5s both;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 1.2rem 2.5rem;
+            background: rgba(0, 180, 216, 0.15);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 20px;
+            border: 2px solid rgba(0, 245, 212, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 180, 216, 0.4);
+            border-color: rgba(0, 245, 212, 0.6);
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header-img {
+                width: 180px;
+                height: 180px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .gallery-grid,
+            .endokrin-grid {
+                gap: 1.5rem;
+                grid-template-columns: 1fr;
+            }
+
+            .header-img {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated background -->
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+
+    <main>
+        <div class="header">
+            <div class="header-img-container">
+                <img src="https://cdn-icons-png.flaticon.com/512/2491/2491418.png" alt="Ilustrasi Sistem Koordinasi"
+                    class="header-img">
+            </div>
+            <h1>🧠 Galeri Sistem Koordinasi</h1>
+            <p class="subtitle">Eksplorasi 3D Model Sistem Saraf, Indra, dan Endokrin</p>
+        </div>
+
+        <!-- SISTEM SARAF -->
+        <div class="section-header">
+            <h2>🧠 Sistem Saraf</h2>
+            <p>Otak, sel saraf, dan komponen sistem saraf pusat</p>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Sistem Saraf</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Sistem Saraf Manusia; Amalia Hasanah 22320021" frameborder="0" allowfullscreen
+                        mozallowfullscreen="true" webkitallowfullscreen="true"
+                        allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking
+                        execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/077debca56494096a39a2b74b9b31359/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Otak</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="OTAK - BAGIAN - BAGIAN OTAK MANUSIA" frameborder="0" allowfullscreen
+                        mozallowfullscreen="true" webkitallowfullscreen="true"
+                        allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking
+                        execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/bfa8c8be90f04950ac1c721ebb25a65a/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Sel Saraf</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Bagian Jaringan Saraf" frameborder="0" allowfullscreen mozallowfullscreen="true"
+                        webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"
+                        xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/85fcf899d96f43d8bd074078034736b7/embed"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- SISTEM INDRA -->
+        <div class="section-header">
+            <h2>👁️ Sistem Indra</h2>
+            <p>Lima indra manusia: mata, telinga, hidung, lidah, dan kulit</p>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Mata</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="BAGIAN-BAGIAN MATA" frameborder="0" allowfullscreen mozallowfullscreen="true"
+                        webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"
+                        xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/3d84b6c5509e45cba26c4ae55baa5007/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Telinga</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Anatomi Telinga" frameborder="0" allowfullscreen mozallowfullscreen="true"
+                        webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"
+                        xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/e0b47d7f84374139b60a9f04ec405ea2/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Hidung</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Anatomi Hidung (Nose Anatomy)" frameborder="0" allowfullscreen
+                        mozallowfullscreen="true" webkitallowfullscreen="true"
+                        allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking
+                        execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/8451417e97bd49e7ba90def247715fe2/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Lidah</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Anatomi Lidah (Tongue Anatomy)" frameborder="0" allowfullscreen
+                        mozallowfullscreen="true" webkitallowfullscreen="true"
+                        allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking
+                        execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/9502fee027034035b0bf72c8f67221c6/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Kulit</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Anatomi Kulit (Skin Anatomy)" frameborder="0" allowfullscreen
+                        mozallowfullscreen="true" webkitallowfullscreen="true"
+                        allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking
+                        execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/a163c89313a94abcb299be60e0f52b08/embed"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- SISTEM ENDOKRIN -->
+        <div class="section-header">
+            <h2>🧬 Sistem Endokrin</h2>
+            <p>Sistem Endokrin Pada Tubuh Manusia</p>
+            <p>Sistem endokrin adalah jaringan kelenjar yang memproduksi dan melepaskan hormon langsung ke dalam aliran
+                darah untuk mengatur berbagai fungsi tubuh. Fungsi utamanya yaitu mengatur aktivitas organ dan jaringan
+                tubuh, mempertahankan keseimbangan fisiologis jangka panjang, dan mengkoordinasikan respon terhadap
+                perubahan lingkungan.</p>
+            <div style="margin-top: 1.5rem;">
+                <a href="https://www.msdmanuals.com/home/multimedia/video/overview-of-the-endocrine-system-and-hormones"
+                    target="_blank" class="back-btn">
+                    <span>Lihat Video Overview Sistem Endokrin</span>
+                </a>
+            </div>
+            <p style="margin-top: 2rem;">Beberapa hormon utama pada tubuh diantaranya yaitu:</p>
+        </div>
+
+        <div class="gallery-grid endokrin-grid">
+            <!-- 1. Hormon Tiroid -->
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">1. Hormon Tiroid</h3>
+                </div>
+                <div class="item-description">
+                    <p>Hormon tiroid adalah hormon yang diproduksi oleh kelenjar tiroid yang berbentuk seperti kupu-kupu
+                        di leher bagian depan, tepat di bawah jakun. Fungsinya adalah mengatur laju metabolisme, detak
+                        jantung, suhu tubuh, dan pertumbuhan.</p>
+                    <a href="https://www.msdmanuals.com/home/multimedia/video/the-thyroid" target="_blank"
+                        class="back-btn hormone-btn">
+                        <span>Lihat Video</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 2. Hormon Pertumbuhan -->
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">2. Hormon Pertumbuhan</h3>
+                </div>
+                <div class="item-description">
+                    <p>Hormon pertumbuhan adalah hormon yang dihasilkan oleh kelenjar pituitari (hipofisis) yang
+                        terletak di dasar otak. Hormon ini mengatur pertumbuhan fisik, perkembangan tulang, serta
+                        metabolisme pada anak-anak dan dewasa.</p>
+                    <a href="https://www.msdmanuals.com/home/multimedia/video/the-pituitary-and-hypothalamus"
+                        target="_blank" class="back-btn hormone-btn">
+                        <span>Lihat Video</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3. Hormon Insulin -->
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">3. Hormon Insulin</h3>
+                </div>
+                <div class="item-description">
+                    <p>Hormon insulin adalah hormon yang diproduksi oleh sel beta di kelenjar pankreas, yang terletak di
+                        belakang lambung. Fungsinya adalah menurunkan kadar gula darah (glukosa) dengan membantu sel
+                        mengambil gula dari darah.</p>
+                    <a href="https://www.msdmanuals.com/home/multimedia/3dmodel/how-insulin-works" target="_blank"
+                        class="back-btn hormone-btn">
+                        <span>Lihat Model 3D</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 4. Hormon Adrenalin -->
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">4. Hormon Adrenalin</h3>
+                </div>
+                <div class="item-description">
+                    <p>Hormon adrenalin adalah hormon yang diproduksi oleh kelenjar adrenal (medula adrenal) yang
+                        terletak di bagian atas ginjal. Hormon ini dilepaskan saat stres, ketakutan, atau bahaya, memicu
+                        respon “lawan atau lari” (fight-or-flight) seperti jantung berdebar dan peningkatan energi.</p>
+                    <a href="https://www.msdmanuals.com/home/multimedia/video/the-adrenal-glands" target="_blank"
+                        class="back-btn hormone-btn">
+                        <span>Lihat Video</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="lead.html" class="back-btn">
+                <span>← Sebelumnya</span>
+            </a>
+            <a href="index.html" class="back-btn">
+                <span>Menu Utama</span>
+            </a>
+            <a href="ar-scene.html" class="back-btn">
+                <span>Selanjutnya →</span>
+            </a>
+        </div>
+    </main>
+
+    <script>
+        // Add haptic feedback
+        document.querySelectorAll('.gallery-item, .back-btn').forEach(el => {
+            el.addEventListener('click', () => {
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(30);
+                }
+            });
+        });
+
+        // Parallax effect for header image
+        if (window.innerWidth > 768) {
+            document.addEventListener('mousemove', (e) => {
+                const img = document.querySelector('.header-img');
+                const x = (e.clientX / window.innerWidth - 0.5) * 20;
+                const y = (e.clientY / window.innerHeight - 0.5) * 20;
+                img.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        }
+    </script>
+</body>
+
+</html>

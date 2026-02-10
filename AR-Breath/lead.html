@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Lead Paragraph - AR-BREATH</title>
+    <link rel="icon" href="assets/images/lungs.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .shape {
+            position: fixed;
+            opacity: 0.12;
+            animation: floatShape 18s infinite ease-in-out;
+            z-index: 0;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .shape:nth-child(1) {
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            left: 8%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 180px;
+            height: 180px;
+            bottom: 25%;
+            right: 12%;
+            animation-delay: 6s;
+            border-radius: 60% 40% 70% 30%;
+        }
+
+        .shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            top: 55%;
+            left: 70%;
+            animation-delay: 12s;
+        }
+
+        @keyframes floatShape {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            50% {
+                transform: translate(40px, -40px) rotate(180deg);
+            }
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-img {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 6px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
+            margin-bottom: 1.8rem;
+            animation: bounce 3s ease-in-out infinite;
+            object-fit: cover;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-25px);
+            }
+        }
+
+        h1 {
+            font-size: clamp(2.6rem, 7vw, 3.8rem);
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            text-shadow: 0 6px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.92;
+            margin-bottom: 2rem;
+        }
+
+        /* ACCORDION */
+        .accordion {
+            background: rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(22px);
+            border: 2px solid rgba(255, 255, 255, 0.22);
+            border-radius: 28px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .accordion:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+            border-color: rgba(255, 255, 255, 0.45);
+        }
+
+        .accordion-header {
+            padding: 1.4rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        .accordion-header h2 {
+            margin: 0;
+            font-size: 1.55rem;
+            color: #f093fb;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .accordion-icon {
+            font-size: 1.8rem;
+            transition: transform 0.4s ease;
+        }
+
+        .accordion.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 2rem;
+            transition: max-height 0.6s ease-out, padding 0.4s ease;
+        }
+
+        .accordion.active .accordion-content {
+            padding: 2rem;
+        }
+
+        .accordion-content p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            margin-bottom: 1.2rem;
+        }
+
+        .accordion-content ol,
+        .accordion-content ul {
+            padding-left: 1.8rem;
+            margin: 1rem 0;
+        }
+
+        .accordion-content li {
+            margin-bottom: 1.2rem;
+        }
+
+        .flowchart,
+        .mechanism-diagram {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .flowchart img,
+        .mechanism-diagram img {
+            max-width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin: 1.5rem auto;
+            display: block;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .flowchart img:hover,
+        .mechanism-diagram img:hover {
+            transform: scale(1.04);
+        }
+
+        .video-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        video {
+            width: 100%;
+            max-height: 500px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+
+        .video-label {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 1rem 0 0.5rem;
+            color: #f093fb;
+        }
+
+        .video-note {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            margin-top: 0.8rem;
+        }
+
+        .embed-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin: 2rem 0;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .embed-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 1.3rem 3rem;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            transition: all 0.35s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+            border-color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Modal Zoom */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(8px);
+            overflow: auto;
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 95%;
+            max-height: 90vh;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.25s ease;
+            cursor: move;
+            touch-action: none;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close:hover {
+            color: #f093fb;
+        }
+
+        .zoom-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: 50px;
+            display: flex;
+            gap: 20px;
+            z-index: 2001;
+        }
+
+        .zoom-btn {
+            background: none;
+            border: 2px solid #fff;
+            color: #fff;
+            font-size: 1.6rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.15);
+        }
+
+        @media (max-width:600px) {
+            .close {
+                top: 15px;
+                right: 20px;
+                font-size: 35px;
+            }
+
+            .zoom-controls {
+                bottom: 20px;
+                padding: 10px 16px;
+                gap: 16px;
+            }
+
+            .zoom-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.4rem;
+            }
+        }
+
+        /* Container untuk gambar berjejer */
+        .image-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            justify-content: space-between;
+        }
+
+        .image-item {
+            flex: 1 1 30%;
+            /* 3 gambar berjejer, min 30% lebar */
+            text-align: center;
+        }
+
+        .image-item img {
+            max-width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .image-item img:hover {
+            transform: scale(1.05);
+        }
+
+        .image-item p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .image-row {
+                flex-direction: column;
+                /* Stack vertikal di mobile */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+
+    <main>
+        <header>
+            <img src="assets/images/book.png" alt="Lead Paragraph Icon" class="header-img">
+            <h1>🫁 Lead Paragraph</h1>
+            <p class="subtitle">Pengantar Sistem Pernapasan Manusia</p>
+        </header>
+
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>🎯 Tujuan Pembelajaran</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <p>1. Peserta didik mampu menjelaskan struktur dan fungsi 9 organ penyusun sistem pernapasan manusia
+                    melalui diskusi kelompok dan kajian literatur yang relevan dengan kolaborasi dan komunikasi.</p>
+                <p>2. Peserta didik dapat menjelaskan 2 mekanisme proses pada sistem pernapasan manusia, serta kaitannya
+                    dengan sistem sirkulasi melalui kolaborasi dan komunikasi.</p>
+                <p>3. Setelah melakukan observasi di Puskesmas sebagai sumber informasi dan edukasi kesehatan, peserta
+                    didik menganalisis 5 gangguan pada sistem pernapasan dan faktor penyebabnya, serta hubungan antara
+                    kebiasaan hidup (merokok, polusi udara, olahraga) dengan kesehatan paru-paru secara tepat melalui
+                    kreativitas.</p>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>🔍 Pengertian Sistem Pernapasan</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <p>Apa kalian tahu apa itu sistem pernapasan?</p>
+                <p>Sistem pernapasan merupakan rangkaian organ yang berfungsi dalam proses pertukaran gas, yaitu
+                    menghirup oksigen dan mengeluarkan karbondioksida serta uap air. Oksigen menjadi kebutuhan utama
+                    dalam proses pernapasan karena berperan penting dalam menghasilkan energi. Oksigen diperoleh dari
+                    udara di sekitar lingkungan. Organ pernapasan bekerja dengan memasukkan udara yang mengandung
+                    oksigen dan mengeluarkan udara sisa yang mengandung karbondioksida serta uap air. Tujuan utama dari
+                    pernapasan adalah memperoleh energi, di mana pada proses bernapas terjadi pelepasan energi. Sistem
+                    pernapasan manusia meliputi saluran pernapasan, mekanisme pernapasan, dan gangguan yang dapat
+                    mempengaruhi sistem pernapasan.</p>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>🫁 Organ-Organ Pernapasan</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <ol>
+                    <li><strong>Hidung</strong><br>Sebagai bagian terluar dari sistem pernapasan, hidung berfungsi
+                        sebagai pintu utama bagi udara yang masuk ke dalam tubuh, hidung terdiri atas dua tulang hidung
+                        (os nasal) serta beberapa tulang rawan (kartilago) yang tertutup oleh kulit.</li>
+                    <li><strong>Rongga hidung</strong><br>Didalam hidung terdapat rongga hidung yang dilapisi oleh
+                        selaput lendir (mukosa) dan memiliki rambut halus. Rongga ini berfungsi sebagai penyaring,
+                        melembabkan, dan menghangatkan udara sebelum masuk ke seluruh saluran pernapasan lebih lanjut.
+                        Lendir berperan menahan partikel debu dan mikroorganisme, sementara jaringan epitel berlapis dan
+                        pembuluh darah membantu menyesuaikan suhu udara dengan kondisi tubuh.</li>
+                    <li><strong>Rongga mulut</strong><br>Sebagai struktur awal saluran pencernaan, rongga mulut juga
+                        dapat berfungsi sebagai jalan masuk udara saat bernapas. Rongga ini secara struktural dibatasi
+                        oleh bibir, langit-langit (palatum) di atas, serta lidah dan jaringan otot di bagian bawah.</li>
+                    <li><strong>Faring</strong><br>Faring (Tekak) merupakan struktur yang terletak di belakang rongga
+                        hidung serta rongga mulut dan tersusun dari otot lurik dengan panjang lebih 4 cm. Bagian ini
+                        memiliki peran sebagai persimpangan antara sistem pernapasan dan sistem pencernaan.</li>
+                    <li><strong>Laring</strong><br>Laring atau pangkal tenggorokan memiliki katup epiglotis yang
+                        berperan sebagai pengatur aliran makanan dan udara pernapasan ke jalur masing-masing. Pada
+                        bagian ini terdapat pita suara yang berperan dalam menghasilkan suara. Namun, tubuh melalui
+                        pengaturan saraf memastikan bahwa aktivitas menelan, bernapas, dan berbicara tidak terjadi
+                        secara bersamaan demi menjaga kesehatan saluran pernapasan.</li>
+                    <li><strong>Trakea</strong><br>Saluran tenggorokan yang berbentuk pipa dengan panjang kurang lebih
+                        10 cm dan berada di leher hingga dada (torak). Struktur dindingnya tipis tetapi kuat dikarenakan
+                        disongkong oleh cincin tulang rawan. Permukaan bagian dalam tenggorokan dilapisi epitel bersilia
+                        yang berperan dalam menangkap serta menyaring benda asing yang masuk ke saluran pernapasan.</li>
+                    <li><strong>Bronkus</strong><br>Di ujung trakea, saluran ini terbagi menjadi dua cabang yang disebut
+                        bronkus. Setiap bronkus mengarah ke paru-paru kanan dan kiri. Struktur bronkus hampir menyerupai
+                        trakea, akan tetapi ukurannya lebih kecil. Susunan tulang rawan pada bronkus juga tidak
+                        beraturan.</li>
+                    <li><strong>Bronkiolus</strong><br>Setelah memasuki paru-paru, bronkus terus bercabang membentuk
+                        saluran yang lebih kecil lagi, namanya adalah bronkiolus. Di ujung setiap bronkiolus terdapat
+                        kantung-kantung udara kecil berdinding tipis yang disebut dengan alveolus atau alveoli.</li>
+                    <li><strong>Paru-paru</strong><br>Sebagai organ pernapasan utama, paru-paru tersusun atas dua bagian
+                        yaitu paru-paru kanan (pulmo dexter) dengan tiga lobus dan paru-paru kiri (pulmo sinister)
+                        dengan dua lobus. Seluruh permukaan paru-paru diselubungi oleh pleura, yaitu selaput rangkap dua
+                        yang membentuk kantung tertutup berisi cairan limfa. Pleura berfungsi mengurangi gesekan ketika
+                        paru-paru mengembang dan mengempis. Dan proses pertukaran gas oksigen dan karbon berlangsung di
+                        alveolus yang terdapat di dalam paru-paru.</li>
+                    <li><strong>Diafragma</strong><br>Diafragma merupakan otot kuat yang berfungsi untuk memisahkan
+                        rongga dada dari rongga perut. Gerakan diafragma ke arah bawah menciptakan ruang di dalam rongga
+                        dada untuk menarik udara dan memperbesar volume paru-paru.</li>
+                </ol>
+
+                <div class="embed-wrapper">
+                    <iframe title="Organ pernapasan pada manusia" frameborder="0" allowfullscreen
+                        mozallowfullscreen="true" webkitallowfullscreen="true"
+                        allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking
+                        execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/30b30c0bc02f4737a585b43aef75e90e/embed"></iframe>
+                </div>
+                <p class="video-note">Model 3D interaktif sistem pernapasan manusia. Putar dan zoom untuk eksplorasi
+                    lebih lanjut.</p>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>🔄 Mekanisme Pernapasan</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <div class="video-container">
+                    <div class="video-label">Animasi Mekanisme Pernapasan Manusia</div>
+                    <video controls preload="metadata"
+                        poster="https://via.placeholder.com/1280x720/000/fff?text=Thumbnail+Pernapasan">
+                        <source src="assets/images/mekanisme.mp4" type="video/mp4">
+                        Browser Anda tidak mendukung pemutaran video.
+                    </video>
+                    <p class="video-note">Klik video untuk memutar/pause. Gunakan kontrol bawaan untuk volume,
+                        fullscreen, dll.</p>
+                </div>
+
+                <div class="mechanism-diagram">
+
+                    <!-- Gambar dari dokumen -->
+                    <div class="mechanism-diagram">
+                        <p class="video-label">Mekanisme Pernapasan Dada</p>
+                        <img src="assets/images/mekanisme.png" alt="Mekanisme Pernapasan Dada" class="zoomable">
+                    </div>
+
+                    <h3>Proses Menarik Napas (Inspirasi)</h3>
+                    <p>Udara dari lingkungan pertama kali masuk melalui lubang hidung. Di dalam rongga hidung terdapat
+                        rambut hidung (vibrissae) dan lendir (mukus) yang berfungsi menyaring debu, kotoran, dan
+                        mikroorganisme agar tidak masuk ke saluran pernapasan. Lendir pada rongga hidung juga berfungsi
+                        dalam melembabkan udara, dan terdapat pembuluh darah kapiler yang membantu menghangatkan udara
+                        agar mendekati suhu tubuh.</p>
+
+                    <p><strong>Faring dan Laring</strong><br>Dari rongga hidung, udara diarahkan ke faring, udara hanya
+                        lewat, tidak mengalami pertukaran gas. Faring berfungsi sebagai jalur penghubung antara rongga
+                        hidung dan laring. Dari faring, udara bergerak ke laring (pangkal tenggorok). Laring berfungsi
+                        sebagai tempat pita suara. Saat bernapas, epiglotis dalam faring dan laring akan terbuka
+                        sehingga udara dapat masuk ke laring. Epiglotis akan menutup saat menelan makanan agar makanan
+                        tidak masuk ke saluran pernapasan. Udara akan masuk ke trakea.</p>
+
+                    <p><strong>Trakea</strong><br>Udara dari laring akan masuk ke trakea, dinding trakea diperkuat oleh
+                        cincin tulang rawan. Bagian dalam trakea dilapisi epitel bersilia dan sel penghasil lendir
+                        (mukosa). Debu atau kotoran yang masih terbawa udara akan terperangkap oleh lendir, lalu
+                        digerakkan ke atas oleh silia menuju faring untuk dikeluarkan atau ditelan. Saat melewati
+                        trakea, udara tetap dipertahankan kehangatan dan kelembapannya, sehingga aman bagi saluran
+                        pernapasan. Setelah melewati trakea, udara akan diteruskan ke bronkus kanan dan kiri yang menuju
+                        masing-masing paru-paru.</p>
+
+                    <p><strong>Bronkus Kanan dan Kiri</strong><br>Setelah udara melewati trakea, udara akan masuk ke
+                        bronkus kanan dan bronkus kiri, masing-masing menuju paru-paru kanan dan kiri. Bronkus memiliki
+                        dinding yang tersusun atas tulang rawan, otot polos, dan lapisan mukosa bersilia sehingga
+                        salurannya tetap terbuka dan mampu menyaring partikel debu yang masih terbawa udara. Di dalam
+                        bronkus, udara terus dialirkan lebih dalam ke paru-paru dan akan bercabang lagi menjadi
+                        bronkiolus yang lebih kecil.</p>
+
+                    <p><strong>Bronkiolus</strong><br>Bronkiolus merupakan percabangan kecil dari bronkus yang terdapat
+                        di dalam paru-paru dan berfungsi menyalurkan udara ke bagian paru-paru yang lebih dalam. Dinding
+                        bronkiolus tidak lagi mengandung tulang rawan, tetapi tersusun atas otot polos yang dapat
+                        berkontraksi dan relaksasi untuk mengatur banyaknya udara yang masuk. Bronkiolus bercabang
+                        menjadi saluran yang semakin kecil hingga berakhir pada alveolus. Melalui bronkiolus, udara
+                        didistribusikan secara merata ke seluruh alveolus sehingga proses pertukaran gas dapat
+                        berlangsung secara optimal.</p>
+
+                    <p><strong>Alveolus</strong><br>Udara yang telah melewati bronkiolus akan masuk ke alveolus, yaitu
+                        kantung udara kecil di paru-paru. Di dalam alveolus, kandungan oksigen (O₂) tinggi sedangkan di
+                        kapiler darah sekitarnya kadar oksigen lebih rendah. Karena perbedaan konsentrasi ini, oksigen
+                        berdifusi dari alveolus menembus dinding alveolus dan kapiler darah, lalu diikat oleh hemoglobin
+                        dalam sel darah merah. Sebaliknya, karbon dioksida (CO₂) yang kadarnya lebih tinggi dalam darah
+                        akan berdifusi dari kapiler ke alveolus. Gas CO₂ tersebut kemudian dikeluarkan dari tubuh saat
+                        proses menghembuskan napas (ekspirasi).</p>
+
+                    <p><strong>Pembuluh Darah</strong><br>Oksigen yang masuk ke kapiler alveolus akan diikat oleh
+                        hemoglobin yang terdapat dalam sel darah merah dan membentuk oksihemoglobin (HbO₂). Ikatan ini
+                        memungkinkan oksigen diangkut secara efisien oleh darah. Darah yang kaya oksigen kemudian
+                        mengalir melalui vena pulmonalis menuju jantung (serambi kiri). Dari jantung, darah dipompa ke
+                        seluruh tubuh melalui arteri. Saat darah mencapai jaringan tubuh, kadar oksigen di sel-sel lebih
+                        rendah dibandingkan di darah, sehingga oksihemoglobin melepaskan oksigen. Oksigen kemudian
+                        berdifusi ke sel-sel tubuh dan digunakan dalam proses respirasi sel untuk menghasilkan energi.
+                        Dengan demikian, oksigen yang berasal dari alveolus akhirnya dimanfaatkan oleh sel-sel tubuh
+                        untuk mendukung aktivitas dan kelangsungan hidup.</p>
+
+                    <h3>Membuang Napas (Ekspirasi)</h3>
+                    <p>Karbon dioksida yang dihasilkan oleh sel-sel tubuh dibawa oleh darah menuju paru-paru melalui
+                        vena pulmonalis dan kapiler darah di sekitar alveolus. Di kapiler alveolus, kadar CO₂ dalam
+                        darah lebih tinggi dibandingkan di alveolus, sehingga karbon dioksida berdifusi dari darah ke
+                        alveolus. Saat ekspirasi, otot diafragma dan otot antartulang rusuk mengendur, diafragma
+                        melengkung ke atas, dan tulang rusuk bergerak ke bawah serta ke dalam. Akibatnya, volume rongga
+                        dada mengecil dan tekanan udara dalam paru-paru meningkat. Udara yang mengandung karbon dioksida
+                        kemudian terdorong keluar dari alveolus melalui bronkiolus, bronkus, trakea, laring, faring, dan
+                        hidung, lalu dikeluarkan ke lingkungan. Dengan demikian, proses membuang napas berfungsi untuk
+                        mengeluarkan karbon dioksida.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>⚠️ Gangguan Sistem Pernapasan</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <!-- Gambar berjejer: Masukkan gambar Anda di sini -->
+                <div class="image-row">
+                    <div class="image-item">
+                        <img src="assets/images/sehat.jpg" alt="Gambar Gangguan 1" class="zoomable">
+                        <p>Paru-paru sehat</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="assets/images/perokok.png" alt="Gambar Gangguan 2" class="zoomable">
+                        <p>Paru-paru perokok</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="assets/images/tbc.jpg" alt="Gambar Gangguan 3" class="zoomable">
+                        <p>Paru-Paru terpapar penyakit Tuberkulosis (TBC)</p>
+                    </div>
+                </div>
+
+                <p><strong>Paru-Paru Sehat</strong></p>
+                <ol>
+                    <li>Warna merah mudah cerah menunjukkan bahwa jaringan paru-paru memiliki suplai oksigen yang baik
+                        dan berada di kondisi sehat.</li>
+                    <li>Permukaan bersih menggambarkan paru-paru yang tidak terkontaminasi oleh polutan, partikel
+                        berbahaya, serta zat asing seperti tar dan debu.</li>
+                    <li>Tekstur elastis dan kenyal karakteristik fisik yang memungkinkan paru-paru mengembang serta
+                        berkontraksi secara optimal.</li>
+                    <li>Fungsi pernapasan optimal kondisi tersebut memastikan pertukaran udara berlangsung lancar dan
+                        efesien.</li>
+                </ol>
+
+                <p><strong>Paru-Paru Perokok</strong></p>
+                <ol>
+                    <li>Paru-paru perokok tidak lagi berwarna merah mudah, melainkan dipenuhi bercak hitam hingga
+                        kecoklatan yang menutupi sebagian besar.</li>
+                    <li>Kondisi tersebut disebabkan oleh penumpukan tar dan endapan berbagai zat kimia beracun yang
+                        berasal dari asap rokok.</li>
+                    <li>Paparan zat kimia secara terus menerus sehingga memicu peradangan jangka panjang pada jaringan
+                        paru-paru. Seperti alveolus dapat menghancurkan struktur alveolus (kantong udara), yang
+                        merupakan lokasi vital bagi proses pertukaran oksigen dan karbon dioksida.</li>
+                    <li>Gejala awal timbul penyakit yaitu:
+                        <ul>
+                            <li>Batuk kronis berdahak seperti batuk yang tidak berkunjung sembuh, terutama di pagi hari,
+                                sering
+                                disertai lendir (dahak) berwarna putih atau kekuningan.</li>
+                            <li>Nafas pendek merasa mudah terengah-engah saat sedang melakukan aktivitas fisik ringan,
+                                seperti
+                                naik tangga atau berjalan cepat.</li>
+                            <li>Kelelahan berlebihan, tubuh terasa cepat lelah meski tidak melakukan aktivitas berat
+                                karena
+                                kadar oksigen dalam darah mulai menurun.</li>
+                        </ul>
+                    </li>
+                    <li>Proses timbulnya penyakit pada perokok adalah:
+                        <ul>
+                            <li>Lumpuhnya silia. Asap rokok merusak silia sehingga mekanisme pembersihan paru-paru
+                                terganggu dan lendir menumpuk.</li>
+                            <li>Peradangan Saluran Napas (Bronkitis). Iritasi zat kimia menyebabkan peradangan saluran
+                                napas disertai produksi lendir berlebih secara terus-menerus.</li>
+                            <li>Kerusakan Alveolus. Kerusakan dinding alveolus oleh tar mengurangi elastisitas paru-paru
+                                dan menghambat pertukaran gas.</li>
+                            <li>Penyempitan Permanen (PPOK). Perpaduan bronkitis dan emfisema menimbulkan penyumbatan
+                                aliran udara yang bersifat permanen.</li>
+                            <li>Mutasi Sel (Kanker). Akumulasi zat karsinogenik dalam jangka panjang memicu mutasi sel
+                                dan pertumbuhan sel yang tidak terkendali.</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <p><strong>Paru-Paru terpapar Penyakit Tuberculosis (TBC)</strong></p>
+                <ol>
+                    <li>Penyebab utama dipicu oleh infeksi bakteri yang bernama Mycobacterium tuberculosis.</li>
+                    <li>Jika sudah terpapar oleh bakteri tersebut paru-paru menunjukkan adanya bintil-bintil (tuberkel)
+                        serta jaringan lesi (luka) pada permukaan paru-paru.</li>
+                    <li>Aktivitas bakteri ini merusak jaringan paru-paru secara progresif, yang dapat membentuk
+                        rongga-rongga atau lubang serta mengubah struktur alami paru-paru.</li>
+                    <li>Cara penularan penyakit ini seperti melalui udara Bakteri menyebar saat penderita TBC aktif
+                        batuk, bersin, berbicara, atau bahkan bernyanyi. Tindakan ini melepaskan percikan ludah kecil
+                        yang disebut droplet nuclei. Inhalasi, dimana Orang sehat dapat tertular jika menghirup droplet
+                        yang melayang di udara tersebut. Bakteri kemudian masuk melalui saluran pernapasan menuju
+                        paru-paru.</li>
+                    <li>Gejala klinis pada penderita TBC seperti timbul batuk kronis dimana disertai darah, mengalami
+                        sesak napas akibat kurangnya fungsi paru-paru yang sehat, dan terdapat nyeri timbul yang tidak
+                        nyaman di area dada, terutama saat bernapas atau batuk.</li>
+                    <li>Bakteri TBC tumbuh secara lambat dengan waktu pembelahan sekitar 15–20 jam, jauh lebih lama
+                        dibandingkan bakteri pada umumnya. Akibatnya, masa inkubasi penyakit ini cukup panjang, yakni
+                        2–10 minggu, bahkan bakteri dapat berada dalam fase laten selama bertahun-tahun tanpa gejala.
+                        TBC baru menjadi aktif dan menular ketika daya tahan tubuh melemah, sehingga bakteri berkembang
+                        pesat dan merusak jaringan. Sifat pertumbuhan yang lambat ini menyebabkan pengobatan harus
+                        dilakukan secara rutin selama 6–9 bulan agar bakteri benar-benar mati.</li>
+                </ol>
+
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header">
+                <h2>🩹 Pencegahan dan Penanggulangan</h2>
+                <span class="accordion-icon">➤</span>
+            </div>
+            <div class="accordion-content">
+                <div class="mechanism-diagram">
+                    <h3>Pencegahan</h3>
+                </div>
+                <h3><br>PEROKOK</h3>
+                <p><strong>Terdapat beberapa pencegahan dari merokok yaitu:</strong></p>
+                <ol>
+                    <li>Menghindari kebiasaan merokok dimana langkah yang paling utama dalam menjaga kesehatan
+                        paru-paru.</li>
+                    <li>Mengurangi paparan asap rokok dimana hindari dari asap rokok karena asap rokok dapat mengandung
+                        zat kimia yang berbahaya.</li>
+                    <li>Akibatnya kerusakan alveolus dimana kandungan dalam rokok dapat merusak struktur kecil di
+                        paru-paru (alveolus).</li>
+                    <li>Sehingga mengakibatkan resiko penyakit yang sangat berat yaitu kanker paru-paru.</li>
+                </ol>
+                <h3><br>PENDERITA TUBERKULOSIS (TBC)</h3>
+                <ol>
+                    <li>Menerapkan cara batuk dan perilaku hidup bersih yang benar untuk mencegah penularan TBC.</li>
+                    <li>Menjaga kualitas udara di dalam rumah agar sirkulasi udara mengalir dengan baik.</li>
+                    <li>Memastikan rumah mendapatkan sinar matahari yang cukup agar lingkungan tetap kering, dimana
+                        bakteri TBC ini sulit berkembang biak di kondisi kering.</li>
+                    <li>Pemberian vaksin sejak usia dini sebagai perlindungan dasar yaitu pemberian vaksin BCG (Bacillus
+                        Calmette-Guérin) dimana vaksin ini mengandung bakteri Mycobacterium bovis yang telah dilemahkan
+                        untuk merangsang sistem kekebalan tubuh tanpa menyebabkan penyakit. Vaksin BCG sebaiknya
+                        diberikan sedini mungkin setelah bayi lahir atau sebelum bayi berusia 1 bulan, batas waktu
+                        paling lambat sebelum bayi berusia 3 bulan. Pada vaksin ini diberikan 1 kali seumur hidup.</li>
+                </ol>
+
+                <div class="mechanism-diagram">
+                    <h3>Penanggulangan</h3>
+                </div>
+                <h3><br>PEROKOK</h3>
+                <p><strong>Penanggulangan dari merokok yaitu:</strong></p>
+                <ol>
+                    <li>Berhenti merokok dimana langkah ini sangat krusial dalam meningkatkan kerusakan lebih lanjut
+                        pada silia (rambut halus) dan jaringan alveolus.</li>
+                    <li>Olahraga rutin dimana aktivitas fisik secara teratur untuk membantu dalam meningkatkan oksigen
+                        dan memperkuat otot-otot pernapasan guna pemulihan fungsi paru-paru.</li>
+                </ol>
+
+                <h3><br>PENDERITA TUBERKULOSIS (TBC)</h3>
+                <ol>
+                    <li>Pengobatan OAT (Obat Anti-Tuberkulosis) dimana menjalani pengobatan secara disiplin dan
+                        konsisten.</li>
+                    <li>Durasi minimal 6 bulan dimana pengobatan harus diselesaikan selama minimal enak bulan tanpa
+                        terputus (sesuai dengan interaksi medias).</li>
+                    <li>Fungsi Obat Anti-Tuberkulosis (OAT) berfungsi untuk mengeradikasi bakteri Mycobacterium
+                        tuberculosis secara menyeluruh. Pengobatan terdiri atas fase intensif untuk membunuh bakteri
+                        aktif dan fase lanjutan untuk mengeliminasi bakteri laten guna mencegah kekambuhan. Kombinasi
+                        beberapa antibiotik dalam OAT juga bertujuan mencegah resistensi obat, sehingga kepatuhan pasien
+                        dalam menjalani terapi minimal enam bulan menjadi faktor penting dalam pemulihan paru-paru.</li>
+                    <li>Nutrisi tinggi protein dimana mengkonsumsi asupan kaya akan protein untuk mendukung dan
+                        mempercepat proses regenerasi jaringan paru-paru yang rusak akibat infeksi.</li>
+                    <li>Olahraga ringan seperti jalan santai di pagi hari (udara segar) atau peregangan ringan
+                        (stretching) dimana penderita TBC hindari olahraga berat.</li>
+                </ol>
+
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html" class="back-btn">
+                <span>← Kembali ke Menu Utama</span>
+            </a>
+            <a href="gallery.html" class="back-btn">
+                <span>Lanjut ke Halaman Selanjutnya →</span>
+            </a>
+        </div>
+    </main>
+
+    <!-- Modal Zoom -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage" alt="Zoomed Image">
+        <div class="zoom-controls">
+            <button class="zoom-btn" onclick="zoomImage(-0.3)">-</button>
+            <button class="zoom-btn" onclick="zoomImage(0.3)">+</button>
+        </div>
+    </div>
+
+    <script>
+        // Accordion dengan tinggi dinamis
+        document.querySelectorAll('.accordion').forEach(accordion => {
+            const header = accordion.querySelector('.accordion-header');
+            const content = accordion.querySelector('.accordion-content');
+
+            header.addEventListener('click', () => {
+                const isActive = accordion.classList.toggle('active');
+
+                if (isActive) {
+                    const height = content.scrollHeight + 60;
+                    content.style.maxHeight = height + 'px';
+                    setTimeout(() => {
+                        if (accordion.classList.contains('active')) {
+                            content.style.maxHeight = 'none';
+                            content.style.height = 'auto';
+                        }
+                    }, 700);
+                } else {
+                    content.style.maxHeight = null;
+                    content.style.height = null;
+                }
+
+                if ('vibrate' in navigator) navigator.vibrate(30);
+            });
+        });
+
+        // Modal Zoom Logic
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+        let scale = 1;
+        let originX = 0;
+        let originY = 0;
+        let isDragging = false;
+        let startX, startY;
+
+        document.querySelectorAll('.zoomable').forEach(img => {
+            img.onclick = function () {
+                modal.style.display = "block";
+                modalImg.src = this.src;
+                modalImg.alt = this.alt;
+                scale = 1; originX = originY = 0;
+                updateTransform();
+                if ('vibrate' in navigator) navigator.vibrate(30);
+            }
+        });
+
+        function closeModal() {
+            modal.style.display = "none";
+            scale = 1; originX = originY = 0;
+        }
+
+        modal.onclick = function (e) {
+            if (e.target === modal) closeModal();
+        }
+
+        function zoomImage(delta) {
+            scale = Math.max(0.5, Math.min(5, scale + delta));
+            updateTransform();
+        }
+
+        function updateTransform() {
+            modalImg.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+        }
+
+        modalImg.addEventListener('mousedown', startDrag);
+        modalImg.addEventListener('touchstart', startDrag, { passive: false });
+
+        function startDrag(e) {
+            if (scale <= 1) return;
+            isDragging = true;
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            startX = clientX - originX;
+            startY = clientY - originY;
+            e.preventDefault();
+        }
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+
+        function drag(e) {
+            if (!isDragging) return;
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            originX = clientX - startX;
+            originY = clientY - startY;
+            updateTransform();
+            e.preventDefault();
+        }
+
+        document.addEventListener('mouseup', () => isDragging = false);
+        document.addEventListener('touchend', () => isDragging = false);
+
+        let startDistance = 0;
+        modalImg.addEventListener('touchstart', e => {
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                startDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+            }
+        }, { passive: false });
+
+        modalImg.addEventListener('touchmove', e => {
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                const currentDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                const delta = currentDistance / startDistance;
+                scale *= delta;
+                scale = Math.max(0.5, Math.min(5, scale));
+                updateTransform();
+                startDistance = currentDistance;
+            }
+        }, { passive: false });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        const videos = document.querySelectorAll('video');
+        videos.forEach(vid => {
+            vid.addEventListener('play', () => {
+                videos.forEach(other => {
+                    if (other !== vid) other.pause();
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

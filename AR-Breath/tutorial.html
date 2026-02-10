@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tutorial Penggunaan - AR-BREATH</title>
+    <link rel="icon" href="assets/images/lungs.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating shapes */
+        .shape {
+            position: fixed;
+            opacity: 0.1;
+            animation: floatShape 15s infinite ease-in-out;
+            z-index: 0;
+        }
+
+        .shape:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            background: white;
+            border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
+            bottom: 20%;
+            right: 15%;
+            animation-delay: 5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            top: 60%;
+            left: 5%;
+            animation-delay: 10s;
+        }
+
+        @keyframes floatShape {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(30px, -30px) rotate(120deg);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
+            }
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1.5rem;
+            animation: bounce 2s ease-in-out infinite;
+            object-fit: cover;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fff, #f093fb);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 20px rgba(240, 147, 251, 0.8);
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .step:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .step:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .step:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .step:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .step:hover::before {
+            left: 100%;
+        }
+
+        .step:hover {
+            transform: translateX(10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .step.completed {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #fff, #f093fb);
+            color: #764ba2;
+            min-width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .step:hover .step-number {
+            transform: rotate(360deg) scale(1.1);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-desc {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .step-icon {
+            font-size: 2rem;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover .step-icon {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .step.completed .step-icon {
+            opacity: 1;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 3rem;
+            animation: fadeIn 1s ease 0.6s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 1.2rem 2.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .back-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .back-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .step {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .step-number {
+                min-width: 50px;
+                height: 50px;
+                line-height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .header-img {
+                width: 120px;
+                height: 120px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Floating shapes -->
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+
+    <main>
+        <header>
+            <img src="https://cdn-icons-png.flaticon.com/512/2942/2942813.png" alt="Tutorial Icon" class="header-img">
+            <h1>📖 Tutorial Penggunaan</h1>
+            <p class="subtitle">Panduan Lengkap Menggunakan AR-BREATH</p>
+        </header>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="steps-container">
+            <div class="step" onclick="toggleStep(this, 1)">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-title">🎯 Start AR</div>
+                    <div class="step-desc">Klik tombol "Start AR" di menu utama untuk mengaktifkan kamera dan memulai
+                        pengalaman Augmented Reality.</div>
+                </div>
+                <div class="step-icon">✓</div>
+            </div>
+
+            <div class="step" onclick="toggleStep(this, 2)">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-title">📸 Aktifkan Kamera</div>
+                    <div class="step-desc">Izinkan akses kamera saat diminta. Pastikan pencahayaan cukup dan kamera
+                        berfungsi dengan baik.</div>
+                </div>
+                <div class="step-icon">✓</div>
+            </div>
+
+            <div class="step" onclick="toggleStep(this, 3)">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-title">🎯 Scan Marker</div>
+                    <div class="step-desc">Arahkan kamera ke gambar marker zona dengan jarak optimal 30-50 cm. Pastikan
+                        marker terlihat jelas dan tidak terpotong.</div>
+                </div>
+                <div class="step-icon">✓</div>
+            </div>
+
+        <div class="back-link">
+            <a href="index.html" class="back-btn">
+                <span>← Kembali ke Menu Utama</span>
+            </a>
+        </div>
+    </main>
+
+    <script>
+        let completedSteps = 0;
+        const totalSteps = 5;
+
+        function toggleStep(element, stepNumber) {
+            if (!element.classList.contains('completed')) {
+                element.classList.add('completed');
+                completedSteps++;
+
+                // Haptic feedback
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50);
+                }
+            } else {
+                element.classList.remove('completed');
+                completedSteps--;
+            }
+
+            // Update progress bar
+            const progress = (completedSteps / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Celebration effect when all steps completed
+            if (completedSteps === totalSteps) {
+                celebrateCompletion();
+            }
+        }
+
+        function celebrateCompletion() {
+            // Create confetti effect
+            for (let i = 0; i < 50; i++) {
+                createConfetti();
+            }
+        }
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.width = '10px';
+            confetti.style.height = '10px';
+            confetti.style.background = ['#fff', '#f093fb', '#667eea'][Math.floor(Math.random() * 3)];
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = '-20px';
+            confetti.style.borderRadius = '50%';
+            confetti.style.pointerEvents = 'none';
+            confetti.style.zIndex = '9999';
+            confetti.style.opacity = '1';
+            confetti.style.transition = 'all 2s ease';
+
+            document.body.appendChild(confetti);
+
+            setTimeout(() => {
+                confetti.style.top = '100vh';
+                confetti.style.opacity = '0';
+                confetti.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+            }, 10);
+
+            setTimeout(() => {
+                confetti.remove();
+            }, 2000);
+        }
+
+        // Add haptic feedback to back button
+        document.querySelector('.back-btn').addEventListener('click', () => {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(30);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

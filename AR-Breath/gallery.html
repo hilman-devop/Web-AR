@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Galeri Organ - AR-BREATH</title>
+    <link rel="icon" href="assets/images/lungs.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background circles */
+        .bg-circle {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            animation: float 20s infinite ease-in-out;
+            z-index: 0;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            right: -50px;
+            animation-delay: 7s;
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            top: 50%;
+            right: -125px;
+            animation-delay: 14s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(50px, -50px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-30px, 30px) scale(0.9);
+            }
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-img-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .header-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: rotateFloat 10s ease-in-out infinite;
+            object-fit: cover;
+        }
+
+        @keyframes rotateFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            75% {
+                transform: translateY(-15px) rotate(-5deg);
+            }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.6s ease both;
+            position: relative;
+        }
+
+        .gallery-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .gallery-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .gallery-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .item-header {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .item-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .embed-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .back-link {
+            text-align: center;
+            animation: fadeIn 1s ease 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 1.2rem 2.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .back-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .back-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Loading skeleton */
+        .loading-skeleton {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                    rgba(255, 255, 255, 0.1) 25%,
+                    rgba(255, 255, 255, 0.2) 50%,
+                    rgba(255, 255, 255, 0.1) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header-img {
+                width: 180px;
+                height: 180px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .gallery-grid {
+                gap: 1.5rem;
+                grid-template-columns: 1fr;
+            }
+
+            .header-img {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated background -->
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+
+    <main>
+        <div class="header">
+            <div class="header-img-container">
+                <img src="assets/images/picture.png" alt="Ilustrasi Organ" class="header-img">
+            </div>
+            <h1>🫁 Galeri Organ</h1>
+            <p class="subtitle">Eksplorasi 3D Model Sistem Pernapasan</p>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Sistem Pernapasan</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Organ pernapasan pada manusia" frameborder="0" allowfullscreen
+                        mozallowfullscreen="true" webkitallowfullscreen="true"
+                        allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking
+                        execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/30b30c0bc02f4737a585b43aef75e90e/embed"> </iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Hidung</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Anatomi Hidung (Nose Anatomy)" frameborder="0" allowfullscreen
+                        mozallowfullscreen="true" webkitallowfullscreen="true"
+                        allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking
+                        execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/8451417e97bd49e7ba90def247715fe2/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Faring</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Model 2 - Oropharynx Boundaries and Foramina" frameborder="0" allowfullscreen
+                        mozallowfullscreen="true" webkitallowfullscreen="true"
+                        allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking
+                        execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/01d49c4e17614456961947d3ad9f05c5/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Laring</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Larynx with muscles and ligaments." frameborder="0" allowfullscreen
+                        mozallowfullscreen="true" webkitallowfullscreen="true"
+                        allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking
+                        execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/5090b3bdd9354e64bdee04dcb3432368/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Trakea dan Bronkus</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Trakea" frameborder="0" allowfullscreen mozallowfullscreen="true"
+                        webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"
+                        xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/546a57d449fd401f8dad1717134a427d/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Bronkiolus</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Struktur Paru-Paru Manusia" frameborder="0" allowfullscreen mozallowfullscreen="true"
+                        webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"
+                        xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/71066e8e69f548ad8655bca36d3fa1e1/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Alveolus</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Alveolus" frameborder="0" allowfullscreen mozallowfullscreen="true"
+                        webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"
+                        xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/f85a05f676a94e17af787dd21905a16a/embed"></iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Paru-Paru</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="Paru - paru bagian kanan" frameborder="0" allowfullscreen mozallowfullscreen="true"
+                        webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"
+                        xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/e78efde5e8f44ab5ac8945b91d279b24/embed"> </iframe>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="item-header">
+                    <h3 class="item-title">Diafragma</h3>
+                </div>
+                <div class="embed-wrapper">
+                    <div class="loading-skeleton"></div>
+                    <iframe title="diafragma" frameborder="0" allowfullscreen mozallowfullscreen="true"
+                        webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"
+                        xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/37f86e25e0fb433985cf50eb1468e86f/embed"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="lead.html" class="back-btn">
+                <span>← Sebelumnya</span>
+            </a>
+            <a href="index.html" class="back-btn">
+                <span>Menu Utama</span>
+            </a>
+            <a href="ar-scene.html" class="back-btn">
+                <span>Selanjutnya →</span>
+            </a>
+        </div>
+
+    </main>
+
+    <script>
+        // Add haptic feedback
+        document.querySelectorAll('.gallery-item, .back-btn').forEach(el => {
+            el.addEventListener('click', () => {
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(30);
+                }
+            });
+        });
+
+        // Parallax effect for header image
+        if (window.innerWidth > 768) {
+            document.addEventListener('mousemove', (e) => {
+                const img = document.querySelector('.header-img');
+                const x = (e.clientX / window.innerWidth - 0.5) * 20;
+                const y = (e.clientY / window.innerHeight - 0.5) * 20;
+                img.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        }
+    </script>
+</body>
+
+</html>

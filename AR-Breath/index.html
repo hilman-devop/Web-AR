@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AR-BREATH</title>
+    <link rel="icon" href="assets/images/lungs.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+
+            33% {
+                transform: translateY(-100px) translateX(50px) rotate(120deg);
+            }
+
+            66% {
+                transform: translateY(50px) translateX(-50px) rotate(240deg);
+            }
+        }
+
+        #splash {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease, transform 1s ease;
+            z-index: 1000;
+        }
+
+        #splash.hidden {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        .logo-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: clamp(3.5rem, 12vw, 6rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #f093fb, #fff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite, pulse 2s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .loading {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        #menu {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+            padding: 2rem 1rem 4rem 1rem;
+            width: 90%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        #menu.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .header-img-container {
+            position: relative;
+            margin-bottom: 2rem;
+            animation: floatImage 4s ease-in-out infinite;
+        }
+
+        @keyframes floatImage {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .header-img {
+            max-width: 200px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .header-img:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        button {
+            position: relative;
+            width: 100%;
+            padding: 1.3rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        button:active {
+            transform: translateY(-2px);
+        }
+
+        button span {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            #menu {
+                max-width: 600px;
+            }
+
+            button {
+                font-size: 1.4rem;
+                padding: 1.5rem;
+            }
+
+            .header-img {
+                max-width: 250px;
+            }
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999;
+            animation: fadeIn 2s ease 3.5s both;
+        }
+
+        .scroll-indicator.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scroll-arrow {
+            width: 30px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            position: relative;
+            animation: bounce-arrow 2s ease-in-out infinite;
+        }
+
+        .scroll-arrow::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            animation: scroll-down 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce-arrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(10px);
+            }
+        }
+
+        @keyframes scroll-down {
+            0% {
+                top: 10px;
+                opacity: 1;
+            }
+
+            100% {
+                top: 30px;
+                opacity: 0;
+            }
+        }
+
+        .scroll-text {
+            color: white;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        /* Footer section */
+        .footer-section {
+            padding: 3rem 1rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            margin-top: 2rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .footer-info {
+            margin-top: 2rem;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            p {
+                font-size: 0.95rem;
+            }
+        }
+
+        /* MODAL PDF DOWNLOAD - DIPERBARUI AGAR LEBIH BERWARNA & SELARAS */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            /* Lebih gelap agar modal menonjol */
+            backdrop-filter: blur(12px);
+            overflow: auto;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.3) 50%, rgba(240, 147, 251, 0.25) 100%);
+            backdrop-filter: blur(25px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 28px;
+            max-width: 420px;
+            width: 90%;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            animation: modalFadeIn 0.4s ease;
+        }
+
+        /* Styling untuk LKPD modal */
+        .lkpd-group {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .lkpd-group h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            text-align: center;
+        }
+
+        .button-pair {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .modal-link {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 1rem 1.2rem;
+            font-size: 1.1rem;
+        }
+
+        .open-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #764ba2 100%);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .modal-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal p {
+            font-size: 1.1rem;
+            margin-bottom: 1.8rem;
+            opacity: 0.95;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: #fff;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .modal-close:hover {
+            color: #f093fb;
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .modal-link {
+            display: inline-block;
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #f093fb 0%, #764ba2 100%);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Animated Background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Splash Screen -->
+    <div id="splash">
+        <div class="logo-container">
+            <div class="logo">AR-BREATH</div>
+        </div>
+        <div class="loading">Sistem Pernapasan Manusia</div>
+    </div>
+
+    <!-- Main Menu -->
+    <div id="menu">
+        <div class="header-img-container">
+            <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" alt="Ilustrasi Sistem Pernapasan"
+                class="header-img">
+        </div>
+
+        <h1>AR-BREATH</h1>
+        <p>Aplikasi Augmented Reality Edukasi<br>Sistem Pernapasan Kelas XI SMA</p>
+
+        <div class="button-group">
+
+            <button onclick="window.location.href='lead.html'">
+                <span>
+                    <span class="icon">🔄</span>
+                    Lead Paragraph
+                </span>
+            </button>
+
+            <button onclick="window.location.href='gallery.html'">
+                <span>
+                    <span class="icon">🖼️</span>
+                    Galeri Organ
+                </span>
+            </button>
+
+            <button onclick="window.location.href='ar-scene.html'">
+                <span>
+                    <span class="icon">🎯</span>
+                    Start AR
+                </span>
+            </button>
+
+            <!-- Menu baru: LKPD -->
+            <button onclick="openModal('lkpdModal')">
+                <span>
+                    <span class="icon">📄</span>
+                    LKPD
+                </span>
+            </button>
+
+            <!-- Menu baru: Sumber Belajar -->
+            <button onclick="openModal('sumberModal')">
+                <span>
+                    <span class="icon">📚</span>
+                    Sumber Belajar
+                </span>
+            </button>
+
+            <button onclick="window.location.href='tutorial.html'">
+                <span>
+                    <span class="icon">📖</span>
+                    Tutorial Penggunaan
+                </span>
+            </button>
+
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator" id="scrollIndicator">
+            <div class="scroll-arrow"></div>
+            <div class="scroll-text">Scroll untuk info lebih</div>
+        </div>
+
+        <!-- Footer Section with Features -->
+        <div class="footer-section">
+            <div class="footer-content">
+                <h2 style="margin-bottom: 1.5rem;">✨ Fitur Unggulan</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">📱</div>
+                        <div class="feature-title">AR Technology</div>
+                        <div class="feature-desc">Teknologi Augmented Reality terkini</div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">🫁</div>
+                        <div class="feature-title">3D Models</div>
+                        <div class="feature-desc">Model organ 3D interaktif</div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">📚</div>
+                        <div class="feature-title">Edukatif</div>
+                        <div class="feature-desc">Materi sesuai kurikulum SMA</div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">🎮</div>
+                        <div class="feature-title">Interaktif</div>
+                        <div class="feature-desc">Belajar sambil berinteraksi</div>
+                    </div>
+                </div>
+
+                <div class="footer-info">
+                    <p>AR-BREATH © 2026 | Sistem Pernapasan Manusia</p>
+                    <p style="margin-top: 0.5rem;">Dikembangkan untuk pendidikan Kelas XI SMA</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for LKPD -->
+    <div id="lkpdModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('lkpdModal')">×</span>
+            <h2>LKPD</h2>
+            <p>Pilih file yang ingin dibuka atau diunduh:</p>
+
+            <div class="lkpd-group">
+                <h3>Pertemuan 1</h3>
+                <div class="button-pair">
+                    <a href="assets/file/Pertemuan 1 .pdf" target="_blank" class="modal-link open-btn">Buka</a>
+                    <a href="assets/file/Pertemuan 1 .pdf" download class="modal-link download-btn">Download</a>
+                </div>
+            </div>
+
+            <div class="lkpd-group">
+                <h3>Pertemuan 2 (Inquiry)</h3>
+                <div class="button-pair">
+                    <a href="assets/file/LKPD Pertemuan 2 (Inquiry) (1).pdf" target="_blank"
+                        class="modal-link open-btn">Buka</a>
+                    <a href="assets/file/LKPD Pertemuan 2 (Inquiry) (1).pdf" download
+                        class="modal-link download-btn">Download</a>
+                </div>
+            </div>
+
+            <div class="lkpd-group">
+                <h3>Pertemuan 3 & 4 (Gangguan Sistem Pernapasan)</h3>
+                <div class="button-pair">
+                    <a href="assets/file/Pertemuan 3 dan 4 Gangguan sistem pernapasan.pdf" target="_blank"
+                        class="modal-link open-btn">Buka</a>
+                    <a href="assets/file/Pertemuan 3 dan 4 Gangguan sistem pernapasan.pdf" download
+                        class="modal-link download-btn">Download</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Sumber Belajar -->
+    <div id="sumberModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('sumberModal')">&times;</span>
+            <h2>Sumber Belajar</h2>
+            <p>Klik link di bawah untuk download file PDF Sumber Belajar.</p>
+            <a href="https://drive.google.com/drive/folders/1Ylqo3XpwF1SEbem_JjKlcGJXFg1NCvq4?usp=drive_link"
+                class="modal-link" target="_blank">Buka Sumber Belajar Pertemuan 1</a>
+            <a href="https://drive.google.com/drive/folders/1qBGNqG_LSar4uyB2FTVC1oYxmjcqwPQ_?usp=drive_link"
+                class="modal-link" target="_blank">Buka Sumber Belajar Pertemuan 2</a>
+            <a href="https://drive.google.com/drive/folders/1yYBq1kCJfFphqAUCNzXeNBl-DK2MRFN2?usp=drive_link"
+                class="modal-link" target="_blank">Buka Sumber Belajar Pertemuan 3</a>
+        </div>
+    </div>
+
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                const size = Math.random() * 60 + 20;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Splash screen animation
+        setTimeout(() => {
+            document.getElementById('splash').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('menu').classList.add('visible');
+            }, 500);
+        }, 3000);
+
+        // Hide scroll indicator when scrolled
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            const scrollIndicator = document.getElementById('scrollIndicator');
+
+            if (window.scrollY > 100) {
+                scrollIndicator.classList.add('hidden');
+            } else {
+                scrollIndicator.classList.remove('hidden');
+            }
+
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (window.scrollY < 100) {
+                    scrollIndicator.classList.remove('hidden');
+                }
+            }, 1000);
+        });
+
+        // Smooth scroll animation for feature items
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease both';
+                }
+            });
+        }, observerOptions);
+
+        setTimeout(() => {
+            document.querySelectorAll('.feature-item').forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+                observer.observe(item);
+            });
+        }, 3500);
+
+        if (!document.querySelector('#fadeInUpAnimation')) {
+            const style = document.createElement('style');
+            style.id = 'fadeInUpAnimation';
+            style.textContent = `
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "flex"; /* Flex untuk center */
+            if ('vibrate' in navigator) navigator.vibrate(30);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        // Close modal on outside click
+        window.onclick = function (event) {
+            const lkpdModal = document.getElementById('lkpdModal');
+            const sumberModal = document.getElementById('sumberModal');
+            if (event.target == lkpdModal) {
+                closeModal('lkpdModal');
+            } else if (event.target == sumberModal) {
+                closeModal('sumberModal');
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>
